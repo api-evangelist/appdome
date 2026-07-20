@@ -1,0 +1,32 @@
+generated: '2026-07-17'
+method: searched
+source: https://apis.appdome.com/docs/getting-started
+docs: https://apis.appdome.com/reference/get_upload-link
+summary:
+  types: [http]
+  http_schemes: [bearer]
+  api_key_in: []
+  oauth2_flows: []
+schemes:
+- name: build2secureToken
+  type: http
+  scheme: bearer
+  bearer_format: opaque
+  description: >-
+    Appdome's Build2Secure API Token, passed in the Authorization header as a bearer
+    token (Authorization: Bearer <token>). The token is obtained from the Appdome
+    account under the 'Account and API' section of the User/API menu.
+  location: header
+  header: Authorization
+token_management:
+  obtain: https://fusion.appdome.com/ -> User Menu -> Account and API
+  refresh_endpoint: POST https://fusion.appdome.com/api/v1/refreshApiToken
+  company_user_refresh: POST /mycompany/users/{userId}/refreshtoken
+identity_context:
+  - team_id: required when operating within a team
+  - fusion_set_id: identifies the security configuration used to build
+notes: >-
+  Single bearer-token model (no OAuth2 / OIDC on the public API). SSO options
+  (Azure, Okta, Ping, Passkey) exist for console login and are recorded as DEV-Logs
+  login events, but the REST API authenticates exclusively with the Build2Secure
+  bearer token.
