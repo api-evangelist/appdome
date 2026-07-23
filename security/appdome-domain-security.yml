@@ -1,0 +1,28 @@
+generated: '2026-07-17'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: appdome.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 11 23:59:59 2026 GMT
+  hsts: false
+- host: apis.appdome.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  4 08:48:59 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: fusion.appdome.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 11 23:59:59 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+domains:
+- domain: appdome.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

@@ -1,0 +1,45 @@
+generated: '2026-07-17'
+method: derived
+source: https://apis.appdome.com/reference
+entities:
+- name: App
+  aka: Application/SDK
+  id_field: application_id
+  description: An uploaded mobile app or SDK (Android APK/AAB/AAR, iOS IPA/ZIP) in the library.
+- name: FusionSet
+  id_field: fusion_set_id
+  description: A named security build configuration applied when fusing/building an app.
+- name: Task
+  id_field: task_id
+  aka: Appdome Build ID
+  description: An asynchronous build/context/sign job; chained via parent_task_id.
+- name: Certificate
+  aka: Certified Secure certificate
+  description: Proof (JSON/PDF) that a built app/SDK passed Appdome protection.
+- name: Team
+  id_field: team_id
+  description: A company team owning apps, fusion sets, and members.
+- name: User
+  id_field: userId
+  description: A company user account with status, role, and entitlements.
+- name: Company
+  description: The top-level org containing teams and users.
+- name: Session
+  description: Active console/API sessions counted against an account limit.
+- name: Event
+  description: DEV-Logs audit/login-logout events for a team or company.
+relationships:
+- {from: Company, to: Team, kind: has_many}
+- {from: Company, to: User, kind: has_many}
+- {from: Team, to: User, kind: has_many, via: userId}
+- {from: Team, to: App, kind: has_many}
+- {from: App, to: Task, kind: has_many, via: application_id}
+- {from: Task, to: FusionSet, kind: belongs_to, via: fusion_set_id}
+- {from: Task, to: Task, kind: has_one, via: parent_task_id}
+- {from: Task, to: Certificate, kind: has_one, via: task_id}
+- {from: FusionSet, to: FusionSet, kind: has_many, via: history_versions}
+- {from: Company, to: Event, kind: has_many}
+notes: >-
+  Derived from the documented Build2Secure operation surface and its path/parameter
+  identifiers (application_id, fusion_set_id, task_id, parent_task_id, team_id,
+  userId). No OpenAPI is published, so id-prefixes/domains are not asserted.

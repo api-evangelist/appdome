@@ -1,0 +1,38 @@
+generated: '2026-07-17'
+method: searched
+source: https://apis.appdome.com/docs/introduction
+versioning:
+  scheme: uri-path
+  current: v1
+  base_url: https://fusion.appdome.com/api/v1
+  docs: https://apis.appdome.com/docs/getting-started
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: No formal API deprecation/sunset policy is published.
+sla:
+  url: null
+  uptime_target: null
+status_page: null
+retention:
+  fusion_set_history:
+    description: Fusion Set version history retention varies by license tier.
+    tiers:
+    - {license: Go, retention: 30 days}
+    - {license: Dev, retention: 90 days}
+    - {license: "Dev+", retention: 180 days}
+    - {license: SRM, retention: 360 days}
+    - {license: "SRM-C", retention: indefinite}
+    source: https://apis.appdome.com/reference/get_fusion-set-history
+audit:
+  dev_logs:
+    description: DEV-Logs REST API exposes team events for versioning and auditing.
+    endpoints:
+    - GET /events
+    - GET /mycompany/events
+deprecated_operations: []
+notes: >-
+  No public status page (status.appdome.com does not resolve) and no published
+  deprecation policy, so StatusPage and Deprecation pointers are intentionally not
+  emitted. Lifecycle signal here is versioning (uri-path v1) plus license-tiered
+  Fusion Set history retention and DEV-Logs audit events.

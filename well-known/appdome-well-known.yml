@@ -1,0 +1,28 @@
+generated: '2026-07-17'
+method: searched
+source: probe of /.well-known/ on Appdome hosts
+hosts:
+- host: https://fusion.appdome.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    note: Host is a SPA that returns 200 with HTML for unknown paths; no real security.txt.
+  - path: /.well-known/openid-configuration
+    status: 404
+    note: SPA HTML returned, not an OIDC discovery document.
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+- host: https://www.appdome.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+- host: https://apis.appdome.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /openapi.json
+    status: 404
+notes: >-
+  No real /.well-known/ discovery documents were found. The fusion.appdome.com SPA
+  returns HTTP 200 with an HTML shell for arbitrary paths, so those responses are
+  recorded as effectively not-found. No WellKnown/SecurityTxt pointer is emitted.

@@ -1,0 +1,40 @@
+generated: '2026-07-17'
+method: searched
+source: https://www.npmjs.com/package/@appdome/cli
+name: Appdome CLI
+binary: appdome
+description: >-
+  Official Appdome command-line interface to build, sign, and protect mobile apps
+  via the Appdome Build2Secure API from a terminal or CI/CD pipeline.
+install:
+- method: npm
+  command: npm install -g @appdome/cli
+alternate_clients:
+- name: appdome-api-python
+  language: python
+  entrypoints:
+  - appdome_api.py    # full upload -> build -> context -> sign -> download flow (apps)
+  - appdome_api_sdk.py # SDK protection flow (Android AAR / iOS ZIP)
+  url: https://github.com/Appdome/appdome-api-python
+- name: appdome-api-bash
+  language: shell
+  url: https://github.com/Appdome/appdome-api-bash
+command_surface:
+- group: apps
+  covers: [upload, list apps, delete apps, get upload status]
+- group: build
+  covers: [build/fuse app or SDK, build-to-test, build PWA, add context, get task status]
+- group: sign
+  covers: [sign, private sign, auto-dev sign, download signed app, download obfuscation mapping]
+- group: publish
+  covers: [publish fusion set to OTA, get app store deploy script]
+- group: certify
+  covers: [download Certified Secure JSON/PDF, validate certificate, validation upload/status]
+- group: fusion-set
+  covers: [export fusion set, compare fusion set, fusion set history, release fusion set]
+- group: admin
+  covers: [company teams, company users, sessions, DEV-Logs events, refresh API token]
+notes: >-
+  Command groups are derived from the documented Build2Secure API operation surface
+  (apis.appdome.com). The CLI wraps the same asynchronous task model (submit a task,
+  poll task_id status, download output).

@@ -1,0 +1,62 @@
+generated: '2026-07-17'
+method: searched
+source: https://apis.appdome.com/docs/getting-started
+authentication:
+  style: bearer-token
+  header: Authorization
+  ref: authentication/appdome-authentication.yml
+base_url: https://fusion.appdome.com/api/v1
+versioning:
+  scheme: uri-path
+  current: v1
+async_model:
+  description: >-
+    The core build/context/sign pipeline is asynchronous. A task is submitted
+    (e.g. build, context, sign), which returns a task_id ("Appdome Build ID");
+    subsequent steps reference it as parent_task_id, and the caller polls task
+    status until completion before downloading output.
+  submit_returns: task_id
+  chaining_field: parent_task_id
+  status_poll: GET /tasks/{task_id}/status
+  upload_status_poll: GET /upload/{app_id}/status
+  upload_status_values: [queued, progress, completed, error]
+uploads:
+  direct: POST /upload
+  presigned_s3:
+    get_link: GET /upload-link
+    put: PUT <aws-presigned-url>
+    finalize: POST /upload-using-link
+    link_ttl_minutes: 30
+identifiers:
+  application_id: identifies an uploaded app/SDK
+  fusion_set_id: identifies the security build configuration
+  task_id: identifies a build/context/sign task
+  team_id: scopes operations to a team
+field_filtering:
+  supported: true
+  param: fields
+  applies_to: [DEV-Logs events endpoints]
+  notes: >-
+    The `fields` parameter filters which fields are returned (dot-path selectors,
+    e.g. data.message_policy.debuggable.serverMode); timestamp is always included.
+idempotency:
+  supported: false
+  notes: >-
+    No idempotency-key header/parameter is documented. De-duplication is instead
+    handled by the task model — a build is tied to a specific application_id +
+    fusion_set_id and produces a task_id.
+error_envelope:
+  shape: json
+  error_field: error
+  notes: >-
+    Failed operations return a JSON body with an `error` key carrying the message
+    (see upload status error state). See errors/appdome-problem-types.yml.
+rate_limits:
+  documented: false
+  session_limit:
+    endpoint: GET /sessions/limit
+    notes: Returns the number of active sessions and the allowed limit for the account.
+cross_reference:
+  errors: errors/appdome-problem-types.yml
+  lifecycle: lifecycle/appdome-lifecycle.yml
+  authentication: authentication/appdome-authentication.yml

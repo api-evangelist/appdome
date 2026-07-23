@@ -1,0 +1,15 @@
+generated: '2026-07-17'
+method: generated
+source: https://apis.appdome.com/reference
+note: >-
+  Appdome publishes no OpenAPI; skills are grounded in the documented Build2Secure
+  REST operations (verified against apis.appdome.com/reference and llms.txt).
+skills:
+- file: appdome-protect-and-sign.md
+  name: Protect, sign, and download a mobile app
+  api: https://fusion.appdome.com/api/v1
+  operations: ["POST /upload", "GET /upload/{app_id}/status", "POST /tasks/build", "POST /tasks/context", "POST /tasks/sign", "GET /tasks/{task_id}/status", "GET /tasks/{task_id}/output/buildapp"]
+- file: appdome-certify-and-verify.md
+  name: Generate and verify a Certified Secure certificate
+  api: https://fusion.appdome.com/api/v1
+  operations: ["GET /tasks/{task_id}/certificate", "POST /verify-certificate", "POST /validation-upload", "GET /validation/{appid}/status"]

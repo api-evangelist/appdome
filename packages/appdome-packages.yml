@@ -1,0 +1,43 @@
+generated: '2026-07-17'
+method: searched
+source: https://github.com/Appdome
+packages:
+- language: javascript
+  registry: npm
+  name: "@appdome/cli"
+  url: https://www.npmjs.com/package/@appdome/cli
+  install: npm install -g @appdome/cli
+  bin: appdome
+  official: true
+  description: Appdome CLI - Build, sign, and protect mobile apps via the Appdome API.
+- language: python
+  registry: github
+  name: appdome-api-python
+  url: https://github.com/Appdome/appdome-api-python
+  install: git clone https://github.com/Appdome/appdome-api-python
+  official: true
+  published_to_registry: false
+  description: >-
+    Python library for interacting with the https://fusion.appdome.com/ tasks API;
+    each endpoint has its own file/main function and appdome_api.py runs the whole
+    upload-to-download flow. Requires Python 3.7+ and requests>=2.28.0.
+- language: shell
+  registry: github
+  name: appdome-api-bash
+  url: https://github.com/Appdome/appdome-api-bash
+  install: git clone https://github.com/Appdome/appdome-api-bash
+  official: true
+  published_to_registry: false
+  description: Bash scripts for interacting with the Appdome Build2Secure tasks API.
+- language: yaml
+  registry: circleci-orb
+  name: appdome-orb
+  url: https://github.com/Appdome/appdome-orb
+  official: true
+  published_to_registry: false
+  description: CircleCI orb for Appdome build-2secure in CI/CD pipelines.
+notes: >-
+  Appdome's recommended integration path is the Python library or the CLI. The
+  Python and bash clients are distributed via GitHub (not published to PyPI). CI/CD
+  step integrations (Bitrise steps, Jenkins/TeamCity plugins, GitHub Action) live in
+  the same GitHub org but are pipeline steps rather than general client SDKs.

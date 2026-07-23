@@ -1,0 +1,14 @@
+{
+  "repo": "appdome",
+  "feeds": [
+    {
+      "source": "https://www.appdome.com/pricing/",
+      "feed_url": "https://www.appdome.com/pricing/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-07-20T13:31:34Z"
+}

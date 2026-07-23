@@ -1,0 +1,74 @@
+generated: '2026-07-17'
+method: derived
+status: candidate
+source: https://apis.appdome.com/reference
+server:
+  name: appdome
+  transport: http
+  url: null
+  notes: >-
+    No official/hosted Appdome MCP server was found (searched docs, npm
+    @modelcontextprotocol, MCP registries). Tools below are a CANDIDATE set derived
+    from the documented Build2Secure REST operations; url is null until a real
+    server exists.
+tools:
+- name: upload_app
+  description: Upload an app/SDK directly to Appdome.
+  source_operation: POST /upload
+- name: get_upload_link
+  description: Get a time-limited AWS presigned URL to upload an app/SDK.
+  source_operation: GET /upload-link
+- name: get_upload_status
+  description: Get the status of an upload (queued/progress/completed/error).
+  source_operation: GET /upload/{app_id}/status
+- name: build_app
+  description: Build/fuse an app or SDK using an existing Fusion Set.
+  source_operation: POST /tasks/build
+- name: build_to_test
+  description: Build an app/SDK for testing against a device-cloud vendor.
+  source_operation: POST /build-to-test/build
+- name: build_pwa
+  description: Build a PWA app (iOS/Android) from a URL.
+  source_operation: POST /pwappload
+- name: add_context
+  description: Add context (icon overlay, private URL, app customization) to a build.
+  source_operation: POST /tasks/context
+- name: sign_app
+  description: Sign a built app.
+  source_operation: POST /tasks/sign
+- name: private_sign_app
+  description: Private-sign a built app.
+  source_operation: POST /tasks/privatesign
+- name: autodev_sign_app
+  description: Auto-DEV sign a built app.
+  source_operation: POST /tasks/autodev
+- name: get_task_status
+  description: Get the status of a build/context/sign task by task_id.
+  source_operation: GET /tasks/{task_id}/status
+- name: download_built_app
+  description: Download the Appdome-built app/SDK output.
+  source_operation: GET /tasks/{task_id}/output/buildapp
+- name: publish_to_ota
+  description: Publish fusion set certificates to the OTA service.
+  source_operation: PUT /publish
+- name: list_apps
+  description: List personal or team apps in the library.
+  source_operation: GET /my-library/apps
+- name: delete_apps
+  description: Delete apps from the platform.
+  source_operation: DELETE /my-library/apps
+- name: download_certificate
+  description: Download the Certified Secure certificate (JSON/PDF).
+  source_operation: GET /tasks/{task_id}/certificate
+- name: verify_certificate
+  description: Validate a Certified Secure certificate by task_id.
+  source_operation: POST /verify-certificate
+- name: refresh_api_token
+  description: Generate a new Build2Secure API token for the user.
+  source_operation: POST /refreshApiToken
+- name: list_company_teams
+  description: Retrieve company teams, status, and permissions.
+  source_operation: GET /mycompany/teams
+- name: get_team_events
+  description: Read DEV-Logs team audit events.
+  source_operation: GET /events

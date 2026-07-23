@@ -1,7 +1,15 @@
 aid: appdome
 name: Appdome
-description: Appdome is a company surfaced as a portfolio company of menlo-ventures and added to the API
-  Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Appdome is a mobile app defense and DevSecOps platform that lets development and
+  security teams add cyber-defense, anti-fraud, anti-malware, anti-cheat, and
+  runtime protections to Android and iOS apps with no code and no SDK. Its
+  Build2Secure ("DEV-API") REST API connects the no-code build, fuse, context,
+  sign, and publish steps to CI/CD systems such as GitHub, GitLab, Jenkins, Azure
+  DevOps, Bitrise, CircleCI, and TeamCity, enabling teams to protect, sign, certify,
+  and release mobile apps automatically at scale. The platform also covers app
+  validation, Certified Secure certificates, team and user management, DEV-Logs
+  audit events, and device-matching services. Appdome is backed by Menlo Ventures.
 url: https://raw.githubusercontent.com/api-evangelist/appdome/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -9,17 +17,133 @@ x-backed-by:
 - menlo-ventures
 x-tier: stub
 x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
 modified: '2026-07-17'
+image: https://www.appdome.com/wp-content/uploads/2025/10/cropped-AppdomeShield-270x270.png
 tags:
 - Company
-apis: []
+- Mobile App Security
+- Mobile App Defense
+- DevSecOps
+- Application Security
+- Mobile
+- CI/CD
+- App Signing
+- Anti-Fraud
+- Code Signing
+apis:
+- name: Appdome Build2Secure API
+  description: >-
+    The Appdome Build2Secure (DEV-API) REST API automates Appdome's no-code mobile
+    app defense pipeline — upload, build/fuse, add context, sign (standard, private,
+    and Auto-DEV signing), download, publish to OTA, validate, generate Certified
+    Secure certificates, manage company teams and users, and read DEV-Logs audit
+    events. Tasks are asynchronous and tracked by task_id.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - Mobile App Security
+  - DevSecOps
+  - App Signing
+  - CI/CD
+  properties:
+  - type: Documentation
+    url: https://apis.appdome.com/docs/introduction
+  - type: APIReference
+    url: https://apis.appdome.com/reference
+  - type: GettingStarted
+    url: https://apis.appdome.com/docs/getting-started
+  - type: Authentication
+    url: authentication/appdome-authentication.yml
+  - type: LLMsTxt
+    url: llms/appdome-llms.txt
+  - type: Conventions
+    url: conventions/appdome-conventions.yml
+  - type: ErrorCatalog
+    url: errors/appdome-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/appdome-lifecycle.yml
+  - type: DataModel
+    url: data-model/appdome-data-model.yml
+  - type: MCPServer
+    url: mcp/appdome-mcp.yml
+  - type: Conformance
+    url: conformance/appdome-conformance.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/appdome-domain-security.yml
 - type: Website
   url: https://appdome.com
+- type: DeveloperPortal
+  url: https://apis.appdome.com/docs/introduction
+- type: Documentation
+  url: https://apis.appdome.com/docs/introduction
+- type: APIReference
+  url: https://apis.appdome.com/reference
+- type: GettingStarted
+  url: https://apis.appdome.com/docs/getting-started
+- type: SignUp
+  url: https://fusion.appdome.com/#/signup
+- type: Login
+  url: https://fusion.appdome.com/
+- type: Pricing
+  url: https://www.appdome.com/pricing/
+- type: Blog
+  url: https://www.appdome.com/dev-sec-blog/
+- type: Support
+  url: https://www.appdome.com/contact-us/
+- type: HelpCenter
+  url: https://www.appdome.com/how-to/
+- type: TermsOfService
+  url: https://www.appdome.com/legal/terms-of-use/
+- type: PrivacyPolicy
+  url: https://www.appdome.com/legal/privacy-policy/
+- type: GitHubOrganization
+  url: https://github.com/Appdome
+- type: Packages
+  url: packages/appdome-packages.yml
+- type: SDKs
+  url: packages/appdome-packages.yml
+- type: CLI
+  url: cli/appdome-cli.yml
+- type: Authentication
+  url: authentication/appdome-authentication.yml
+- type: LLMsTxt
+  url: llms/appdome-llms.txt
+- type: Conventions
+  url: conventions/appdome-conventions.yml
+- type: ErrorCatalog
+  url: errors/appdome-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/appdome-lifecycle.yml
+- type: DataModel
+  url: data-model/appdome-data-model.yml
+- type: MCPServer
+  url: mcp/appdome-mcp.yml
+- type: Conformance
+  url: conformance/appdome-conformance.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

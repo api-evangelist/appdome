@@ -1,0 +1,29 @@
+generated: '2026-07-17'
+method: derived
+source: https://apis.appdome.com/docs/introduction
+standards:
+- id: rest
+  conforms: true
+  evidence: Resource-oriented HTTP API over https://fusion.appdome.com/api/v1.
+- id: http-bearer-auth
+  conforms: true
+  evidence: Authorization header carries the Build2Secure bearer token.
+- id: oauth2
+  conforms: false
+  evidence: Public API uses a single bearer token, not OAuth2 flows.
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration is served (SPA 200s are not real docs).
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a JSON `error` field, not application/problem+json.
+- id: async-task-polling
+  conforms: true
+  evidence: Build/context/sign tasks are async; status polled via task_id.
+- id: uri-path-versioning
+  conforms: true
+  evidence: Version is carried in the /api/v1 path segment.
+notes: >-
+  Derived from observed API behavior and documentation. No published compliance
+  certifications (SOC 2 / ISO 27001 / etc.) were verified on a public trust page, so
+  no `Compliance` pointer is emitted.

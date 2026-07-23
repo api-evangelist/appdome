@@ -1,0 +1,33 @@
+generated: '2026-07-17'
+method: searched
+source: https://apis.appdome.com/docs/introduction
+format: json
+envelope:
+  error_field: error
+  description: >-
+    Failed operations return a JSON body containing an `error` key with a
+    human-readable message. Appdome does not publish an RFC 9457 problem+json
+    contract; errors are conveyed via HTTP status plus the `error` field.
+problems:
+- context: upload
+  state: error
+  source_operation: GET /upload/{app_id}/status
+  title: Upload failed
+  detail: >-
+    When an upload's status is `error`, the status response includes an `error` key
+    with the failure message. Other upload states are queued, progress, completed.
+- context: authentication
+  status: 401
+  title: Unauthorized
+  detail: >-
+    Missing or invalid Build2Secure bearer token in the Authorization header.
+- context: task
+  source_operation: GET /tasks/{task_id}/status
+  title: Task failure
+  detail: >-
+    Build/context/sign tasks report failure through the task status endpoint; poll
+    task_id status and inspect the returned error message before downloading output.
+notes: >-
+  Derived from the documented status/error behavior of the Build2Secure API. Appdome
+  publishes no consolidated numeric error-code registry on the public API reference;
+  this catalog captures the documented error envelope and the known failure states.
