@@ -6,11 +6,9 @@ server:
   name: appdome
   transport: http
   url: null
-  notes: >-
-    No official/hosted Appdome MCP server was found (searched docs, npm
-    @modelcontextprotocol, MCP registries). Tools below are a CANDIDATE set derived
-    from the documented Build2Secure REST operations; url is null until a real
-    server exists.
+  notes: No official/hosted Appdome MCP server was found (searched docs, npm @modelcontextprotocol, MCP
+    registries). Tools below are a CANDIDATE set derived from the documented Build2Secure REST operations;
+    url is null until a real server exists.
 tools:
 - name: upload_app
   description: Upload an app/SDK directly to Appdome.
@@ -72,3 +70,9 @@ tools:
 - name: get_team_events
   description: Read DEV-Logs team audit events.
   source_operation: GET /events
+deployment:
+  mode: none
+  verified: derived
+  tools: 20
+  checked: '2026-08-12'
+  source: catalog MCP census
