@@ -56,6 +56,7 @@ tags:
 - App Signing
 - Anti-Fraud
 - Code Signing
+- Developer Tools
 apis:
 - name: Appdome Build2Secure API
   description: >-
