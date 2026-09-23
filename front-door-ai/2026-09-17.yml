@@ -1,0 +1,29 @@
+# Front Door AI Index — appdome — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: appdome
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: appdome.com
+  final_host: www.appdome.com:443
+  ownership: own
+  owner: appdome
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 21
+  host_score: 21
+  density: 9.37
+  words: 2241
+  tiers:
+    agentic: 13
+    core: 8
+    model: 0
+  ambiguous: 5
+  top_terms:
+    agentic: 13
+    AI: 8
+    agent: 2
+    automation: 2
+    intelligence: 1
