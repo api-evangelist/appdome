@@ -1,5 +1,5 @@
 generated: '2026-10-14'
-method: none
+method: searched
 source:
 - https://zapier.com/apps/appdome/integrations
 - https://n8n.io/integrations/appdome/
@@ -7,10 +7,28 @@ source:
 - https://monid.ai/tools/appdome
 checked:
 - https://composio.dev/toolkits/appdome
+- https://github.com/marketplace?type=actions
 - https://monid.ai/tools/appdome
 - https://n8n.io/integrations/appdome/
 - https://zapier.com/apps/appdome/integrations
 summary: null
 marketplace_apps: []
-edges: []
+edges:
+- partner_name: GitHub Marketplace (actions)
+  partner: github-actions
+  partner_match: aggregator
+  type: marketplace
+  marketplace: github-actions
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://github.com/marketplace/actions/appdome-build-2secure
+  listing_count: 1
+  apps:
+  - Appdome build-2secure
+  publisher_name: Appdome
+  badges:
+  - Verified creator
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
 templates: []
