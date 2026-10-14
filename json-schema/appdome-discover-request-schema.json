@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/appdome/main/json-schema/appdome-discover-request-schema.json",
+  "title": "DiscoverRequest",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/appdome-mobile-risk-api-openapi.yml#/components/schemas/DiscoverRequest",
+  "type": "object",
+  "required": [
+    "bundle_ids",
+    "device_id"
+  ],
+  "properties": {
+    "bundle_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of application bundle identifiers"
+    },
+    "device_id": {
+      "type": "string",
+      "description": "The device ID to find similar matches for"
+    },
+    "threshold": {
+      "type": "number",
+      "format": "double",
+      "description": "Minimum similarity score for returned results. Accepted values: 0 to 1. Defaults to 1.0.",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 1
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Maximum number of results to return. Defaults to 10, maximum is 100.",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 10
+    }
+  }
+}

@@ -1,22 +1,26 @@
 aid: appdome
+
 name: Appdome
-description: >-
-  Appdome is a mobile app defense and DevSecOps platform that lets development and
-  security teams add cyber-defense, anti-fraud, anti-malware, anti-cheat, and
-  runtime protections to Android and iOS apps with no code and no SDK. Its
-  Build2Secure ("DEV-API") REST API connects the no-code build, fuse, context,
-  sign, and publish steps to CI/CD systems such as GitHub, GitLab, Jenkins, Azure
-  DevOps, Bitrise, CircleCI, and TeamCity, enabling teams to protect, sign, certify,
-  and release mobile apps automatically at scale. The platform also covers app
-  validation, Certified Secure certificates, team and user management, DEV-Logs
-  audit events, and device-matching services. Appdome is backed by Menlo Ventures.
+
+description: Appdome is a mobile app defense and DevSecOps platform that lets development and security teams add cyber-defense, anti-fraud, anti-malware,
+  anti-cheat, and runtime protections to Android and iOS apps with no code and no SDK. Its Build2Secure ("DEV-API") REST API connects the no-code
+  build, fuse, context, sign, and publish steps to CI/CD systems such as GitHub, GitLab, Jenkins, Azure DevOps, Bitrise, CircleCI, and TeamCity,
+  enabling teams to protect, sign, certify, and release mobile apps automatically at scale. The platform also covers app validation, Certified
+  Secure certificates, team and user management, DEV-Logs audit events, and device-matching services. Appdome is backed by Menlo Ventures.
+
 url: https://raw.githubusercontent.com/api-evangelist/appdome/refs/heads/main/apis.yml
+
 x-type: company
+
 x-source: vc-portfolio
+
 x-backed-by:
 - menlo-ventures
+
 x-tier: stub
+
 x-tier-reason: portfolio-lead
+
 deliveryModel:
   model: saas
   open_source: false
@@ -28,6 +32,7 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+
 accessModel:
   pricing: unknown
   onboarding: unknown
@@ -41,13 +46,21 @@ accessModel:
   - security
   generated: '2026-09-03'
   method: derived
+
 specificationVersion: '0.23'
+
 created: '2026-07-17'
+
 modified: '2026-07-17'
+
 image: https://www.appdome.com/wp-content/uploads/2025/10/cropped-AppdomeShield-270x270.png
+
 x-docs-platform: readme
+
 x-docs-platform-confidence: high
+
 x-docs-platform-checked: 2026-09-19
+
 tags:
 - Company
 - Mobile App Security
@@ -60,6 +73,7 @@ tags:
 - Fraud Prevention
 - Code Signing
 - Developer Tools
+
 tags_raw:
 - Company
 - Mobile App Security
@@ -72,51 +86,26 @@ tags_raw:
 - Anti-Fraud
 - Code Signing
 - Developer Tools
-apis:
-- name: Appdome Build2Secure API
-  description: >-
-    The Appdome Build2Secure (DEV-API) REST API automates Appdome's no-code mobile
-    app defense pipeline — upload, build/fuse, add context, sign (standard, private,
-    and Auto-DEV signing), download, publish to OTA, validate, generate Certified
-    Secure certificates, manage company teams and users, and read DEV-Logs audit
-    events. Tasks are asynchronous and tracked by task_id.
-  humanURL: https://apis.appdome.com/docs/introduction
-  baseURL: https://fusion.appdome.com/api/v1
-  tags:
-  - Mobile App Security
-  - DevSecOps
-  - App Signing
-  - CI/CD
-  properties:
-  - type: Documentation
-    url: https://apis.appdome.com/docs/introduction
-  - type: APIReference
-    url: https://apis.appdome.com/reference
-  - type: GettingStarted
-    url: https://apis.appdome.com/docs/getting-started
-  - type: Authentication
-    url: authentication/appdome-authentication.yml
-  - type: LLMsTxt
-    url: llms/appdome-llms.txt
-  - type: Conventions
-    url: conventions/appdome-conventions.yml
-  - type: ErrorCatalog
-    url: errors/appdome-problem-types.yml
-  - type: Lifecycle
-    url: lifecycle/appdome-lifecycle.yml
-  - type: DataModel
-    url: data-model/appdome-data-model.yml
-  - type: X-MCPServerCandidate
-    url: mcp/appdome-mcp.yml
-    note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
-  - type: Conformance
-    url: conformance/appdome-conformance.yml
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+
 common:
+- type: AgenticAccess
+  url: agentic-access/appdome-agentic-access.yml
+- type: Spectral
+  url: rules/appdome-rules.yml
+- type: JSONLD
+  url: json-ld/appdome-context.jsonld
+- type: Vocabulary
+  url: vocabulary/appdome-vocabulary.yml
+- type: Hosts
+  url: hosts/appdome-hosts.yml
+- type: Vendors
+  url: vendors/appdome-vendors.yml
 - type: DomainSecurity
   url: security/appdome-domain-security.yml
 - type: Website
@@ -167,13 +156,90 @@ common:
   url: data-model/appdome-data-model.yml
 - type: X-MCPServerCandidate
   url: mcp/appdome-mcp.yml
-  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published
+    API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting
+    the artifact-type surfaces with a server that does not exist.'
 - type: Conformance
   url: conformance/appdome-conformance.yml
 - type: AgentSkill
   url: skills/_index.yml
+
+apis:
+- name: Appdome Build2Secure API
+  description: The Appdome Build2Secure (DEV-API) REST API automates Appdome's no-code mobile app defense pipeline — upload, build/fuse, add context,
+    sign (standard, private, and Auto-DEV signing), download, publish to OTA, validate, generate Certified Secure certificates, manage company
+    teams and users, and read DEV-Logs audit events. Tasks are asynchronous and tracked by task_id.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - Mobile App Security
+  - DevSecOps
+  - App Signing
+  - CI/CD
+  properties:
+  - type: Documentation
+    url: https://apis.appdome.com/docs/introduction
+  - type: APIReference
+    url: https://apis.appdome.com/reference
+  - type: GettingStarted
+    url: https://apis.appdome.com/docs/getting-started
+  - type: Authentication
+    url: authentication/appdome-authentication.yml
+  - type: LLMsTxt
+    url: llms/appdome-llms.txt
+  - type: Conventions
+    url: conventions/appdome-conventions.yml
+  - type: ErrorCatalog
+    url: errors/appdome-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/appdome-lifecycle.yml
+  - type: DataModel
+    url: data-model/appdome-data-model.yml
+  - type: X-MCPServerCandidate
+    url: mcp/appdome-mcp.yml
+    note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published
+      API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting
+      the artifact-type surfaces with a server that does not exist.'
+  - type: Conformance
+    url: conformance/appdome-conformance.yml
+  aid: appdome:appdome-build2secure-api
+- aid: appdome:appdome-api
+  name: Appdome Appdome API
+  description: The Appdome API from Appdome — 44 operation(s) for appdome.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - Appdome
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-api-openapi.yml
+- aid: appdome:appdome-mobile-risk-api
+  name: Appdome Mobile Risk API
+  description: The Mobile Risk API from Appdome — 2 operation(s) for mobile risk.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - Mobile Risk
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-mobile-risk-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/appdome-discover-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-response-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-discover-result-schema.json
+
 x-enrichment:
   date: '2026-07-19'
   status: backfilled
   pass: local-v1
   note: backfilled from .gitignore signal + verified work evidence
+
+x-readme-harvest:
+  date: '2026-10-14'
+  ops: 53
+  tool: harvest-readme-openapi.py
+  portal: https://apis.appdome.com

@@ -23,7 +23,17 @@ standards:
 - id: uri-path-versioning
   conforms: true
   evidence: Version is carried in the /api/v1 path segment.
-notes: >-
-  Derived from observed API behavior and documentation. No published compliance
-  certifications (SOC 2 / ISO 27001 / etc.) were verified on a public trust page, so
-  no `Compliance` pointer is emitted.
+- id: openapi-3.0
+  conforms: true
+  evidence: the document declares 3.0.0
+- id: rfc9457
+  conforms: false
+  evidence: no response declares application/problem+json
+- id: idempotency
+  conforms: false
+  evidence: no idempotency key parameter on mutating operations
+- id: pagination
+  conforms: true
+  evidence: list operations take limit, page, per_page
+notes: Derived from observed API behavior and documentation. No published compliance certifications (SOC 2 / ISO 27001 / etc.) were verified on
+  a public trust page, so no `Compliance` pointer is emitted.

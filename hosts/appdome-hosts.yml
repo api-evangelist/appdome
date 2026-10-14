@@ -1,0 +1,74 @@
+generated: '2026-10-14'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 5
+  own: 4
+  other_domain: 0
+  platform: 1
+  roles:
+  - identity
+  - portal
+  - source
+  - support
+  - website
+hosts:
+- host: apis.appdome.com
+  found_by:
+  - pointer
+  - apis[]
+  types:
+  - DeveloperPortal
+  - Documentation
+  - APIReference
+  - GettingStarted
+  serves:
+  - docs
+  registrable_domain: appdome.com
+  role: portal
+  relation: own
+- host: appdome.com
+  found_by:
+  - pointer
+  types:
+  - Website
+  serves: []
+  registrable_domain: appdome.com
+  role: website
+  relation: own
+- host: fusion.appdome.com
+  found_by:
+  - pointer
+  - apis[]
+  types:
+  - SignUp
+  - Login
+  serves:
+  - api
+  registrable_domain: appdome.com
+  role: identity
+  relation: own
+- host: github.com
+  found_by:
+  - pointer
+  types:
+  - GitHubOrganization
+  serves: []
+  registrable_domain: github.com
+  role: source
+  relation: platform
+- host: www.appdome.com
+  found_by:
+  - pointer
+  types:
+  - Pricing
+  - Blog
+  - Support
+  - HelpCenter
+  - TermsOfService
+  - PrivacyPolicy
+  serves: []
+  registrable_domain: appdome.com
+  role: support
+  relation: own

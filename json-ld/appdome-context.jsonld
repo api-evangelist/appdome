@@ -1,0 +1,58 @@
+{
+  "@context": {
+    "@vocab": "https://appdome.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "appdome": "https://appdome.com/schema#",
+    "CompareRequest": "appdome:CompareRequest",
+    "query_device_id": {
+      "@id": "appdome:query_device_id",
+      "@type": "xsd:string"
+    },
+    "candidate_device_id": {
+      "@id": "appdome:candidate_device_id",
+      "@type": "xsd:string"
+    },
+    "CompareResponse": "appdome:CompareResponse",
+    "similarity": {
+      "@id": "appdome:similarity",
+      "@type": "xsd:decimal"
+    },
+    "ErrorResponse": "appdome:ErrorResponse",
+    "detail": {
+      "@id": "appdome:detail",
+      "@type": "xsd:string"
+    },
+    "DiscoverRequest": "appdome:DiscoverRequest",
+    "bundle_ids": {
+      "@id": "appdome:bundle_ids",
+      "@container": "@list"
+    },
+    "device_id": {
+      "@id": "appdome:device_id",
+      "@type": "xsd:string"
+    },
+    "threshold": {
+      "@id": "appdome:threshold",
+      "@type": "xsd:decimal"
+    },
+    "limit": {
+      "@id": "appdome:limit",
+      "@type": "xsd:integer"
+    },
+    "DiscoverResult": "appdome:DiscoverResult",
+    "deviceid": {
+      "@id": "appdome:deviceid",
+      "@type": "xsd:string"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Appdome API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Appdome's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-14) from openapi/appdome-api-openapi.yml, openapi/appdome-mobile-risk-api-openapi.yml.",
+  "dcterms:created": "2026-10-14",
+  "dcterms:source": [
+    "openapi/appdome-api-openapi.yml",
+    "openapi/appdome-mobile-risk-api-openapi.yml"
+  ]
+}

@@ -1,0 +1,76 @@
+generated: '2026-10-14'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/appdome-api-openapi.yml
+- openapi/appdome-mobile-risk-api-openapi.yml
+vocabulary:
+  name: Appdome Domain Vocabulary
+  description: 'Terms declared by Appdome''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-14'
+  terms:
+  - term: CompareRequest
+    definition: 'Object declared by the contract with fields: query_device_id, candidate_device_id.'
+    tags:
+    - Object
+    source: openapi/appdome-mobile-risk-api-openapi.yml#/components/schemas/CompareRequest
+  - term: CompareResponse
+    definition: 'Object declared by the contract with fields: query_device_id, candidate_device_id, similarity.'
+    tags:
+    - Object
+    source: openapi/appdome-mobile-risk-api-openapi.yml#/components/schemas/CompareResponse
+  - term: ErrorResponse
+    definition: 'Object declared by the contract with fields: detail.'
+    tags:
+    - Object
+    source: openapi/appdome-mobile-risk-api-openapi.yml#/components/schemas/ErrorResponse
+  - term: DiscoverRequest
+    definition: 'Object declared by the contract with fields: bundle_ids, device_id, threshold, limit.'
+    tags:
+    - Object
+    source: openapi/appdome-mobile-risk-api-openapi.yml#/components/schemas/DiscoverRequest
+  - term: DiscoverResult
+    definition: 'Object declared by the contract with fields: deviceid, similarity.'
+    tags:
+    - Object
+    source: openapi/appdome-mobile-risk-api-openapi.yml#/components/schemas/DiscoverResult
+  - term: Tasks
+    definition: 'Resource group in the contract; its operation PUT /Amazon upload link>: This endpoint allows you to upload an app or SDK to a
+      public AWS URL obtained from the "Get Public Link" request.'
+    tags:
+    - Resource Group
+    source: openapi/appdome-api-openapi.yml
+  - term: API Account Maintenance
+    definition: 'Resource group in the contract; its operation GET /events: DEV-Logs™ REST API for versioning and auditing purposes.'
+    tags:
+    - Resource Group
+    source: openapi/appdome-api-openapi.yml
+  - term: API User Management
+    definition: 'Resource group in the contract; its operation GET /myCompany/events: REST API for retreiving loginlogout within your company.'
+    tags:
+    - Resource Group
+    source: openapi/appdome-api-openapi.yml
+  - term: API Team Management
+    definition: 'Resource group in the contract; its operation POST /myCompany/teams: Allows you to create a new company team and add team members
+      that belong to your company.'
+    tags:
+    - Resource Group
+    source: openapi/appdome-api-openapi.yml
+  - term: Secure Certificate
+    definition: 'Resource group in the contract; its operation GET /tasks/{task_id}/certificate: Download Appdome’s Certified Secure certificate
+      (PDF file) of your secured App/SDK, identified by its task ID'
+    tags:
+    - Resource Group
+    source: openapi/appdome-api-openapi.yml
+  - term: App Validation
+    definition: 'Resource group in the contract; its operation POST /validation/upload: Upload an application to validate its integrity.'
+    tags:
+    - Resource Group
+    source: openapi/appdome-api-openapi.yml
+  - term: Device Match
+    definition: 'Resource group in the contract; its operation POST /v1/devicematch/compare: Compares two device IDs and returns a similarity
+      score indicating how closely they match.'
+    tags:
+    - Resource Group
+    source: openapi/appdome-mobile-risk-api-openapi.yml

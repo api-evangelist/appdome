@@ -1,0 +1,16 @@
+generated: '2026-10-14'
+method: none
+source:
+- https://zapier.com/apps/appdome/integrations
+- https://n8n.io/integrations/appdome/
+- https://composio.dev/toolkits/appdome
+- https://monid.ai/tools/appdome
+checked:
+- https://composio.dev/toolkits/appdome
+- https://monid.ai/tools/appdome
+- https://n8n.io/integrations/appdome/
+- https://zapier.com/apps/appdome/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []

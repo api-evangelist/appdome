@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/appdome/main/json-schema/appdome-compare-request-schema.json",
+  "title": "CompareRequest",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/appdome-mobile-risk-api-openapi.yml#/components/schemas/CompareRequest",
+  "type": "object",
+  "required": [
+    "query_device_id",
+    "candidate_device_id"
+  ],
+  "properties": {
+    "query_device_id": {
+      "type": "string",
+      "description": "The device ID to compare"
+    },
+    "candidate_device_id": {
+      "type": "string",
+      "description": "The device ID to compare with"
+    }
+  }
+}

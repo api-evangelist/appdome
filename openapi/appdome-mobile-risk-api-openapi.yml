@@ -1,0 +1,203 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Mobile Risk API
+servers:
+- url: https://mobilerisk.appdome.com
+paths:
+  /v1/devicematch/compare:
+    post:
+      tags:
+      - Device Match
+      summary: Compare
+      description: Compares two device IDs and returns a similarity score indicating how closely they match.
+      parameters:
+      - name: x-appdome
+        in: header
+        required: true
+        schema:
+          type: string
+          default: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompareRequest'
+            example:
+              query_device_id: <Device_id_A>
+              candidate_device_id: <Device_id_B>
+      responses:
+        '200':
+          description: Successful comparison result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompareResponse'
+              example:
+                query_device_id: <Device_id_A>
+                candidate_device_id: <Device_id_B>
+                similarity: 0.811
+        '400':
+          description: Invalid or malformed device ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_format:
+                  summary: Invalid device ID format
+                  value:
+                    detail: Invalid device ID format
+                wrong_parts:
+                  summary: Wrong number of parts
+                  value:
+                    detail: 'Failed to parse query_device_id ''<Device_id_A>''. The device ID format is invalid or uses an unknown schema. Error: Invalid device ID format: expected 4 parts, got 3'
+                invalid_hex:
+                  summary: Invalid hex characters
+                  value:
+                    detail: 'Failed to parse query_device_id ''<Device_id_A>''. The device ID format is invalid or uses an unknown schema. Error: Invalid device ID format: part ''<Device_id_A>'' contains invalid hex characters. Device ID parts must contain only valid hexadecimal characters (0-9, a-f).'
+      security:
+      - bearerAuth: []
+  /v1/devicematch/discover:
+    post:
+      tags:
+      - Device Match
+      summary: Discover
+      description: Given a device ID and an optional similarity threshold, returns the most similar device IDs from the dataset, up to a configurable limit.
+      parameters:
+      - name: x-appdome
+        in: header
+        required: true
+        schema:
+          type: string
+          default: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiscoverRequest'
+            examples:
+              minimal:
+                summary: Minimal request (no optional params)
+                value:
+                  bundle_ids:
+                  - com.bundle_1
+                  - com.bundle_2
+                  device_id: <Device_id_A>
+              with_options:
+                summary: Request with threshold and limit
+                value:
+                  bundle_ids:
+                  - com.bundle_1
+                  - com.bundle_2
+                  device_id: <Device_id_A>
+                  threshold: 0.7
+                  limit: 3
+      responses:
+        '200':
+          description: List of similar device IDs with their similarity scores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscoverResult'
+              example:
+              - deviceid: <Device_id_B>
+                similarity: 0.811
+              - deviceid: <Device_id_C>
+                similarity: 0.704
+              - deviceid: <Device_id_D>
+                similarity: 0.633
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    CompareRequest:
+      type: object
+      required:
+      - query_device_id
+      - candidate_device_id
+      properties:
+        query_device_id:
+          type: string
+          description: The device ID to compare
+        candidate_device_id:
+          type: string
+          description: The device ID to compare with
+    CompareResponse:
+      type: object
+      properties:
+        query_device_id:
+          type: string
+          description: The query device ID
+        candidate_device_id:
+          type: string
+          description: The candidate device ID
+        similarity:
+          type: number
+          format: double
+          description: Similarity score between 0 and 1
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message describing the issue
+    DiscoverRequest:
+      type: object
+      required:
+      - bundle_ids
+      - device_id
+      properties:
+        bundle_ids:
+          type: array
+          items:
+            type: string
+          description: List of application bundle identifiers
+        device_id:
+          type: string
+          description: The device ID to find similar matches for
+        threshold:
+          type: number
+          format: double
+          description: 'Minimum similarity score for returned results. Accepted values: 0 to 1. Defaults to 1.0.'
+          minimum: 0
+          maximum: 1
+          default: 1
+        limit:
+          type: integer
+          description: Maximum number of results to return. Defaults to 10, maximum is 100.
+          minimum: 1
+          maximum: 100
+          default: 10
+    DiscoverResult:
+      type: object
+      properties:
+        deviceid:
+          type: string
+          description: The matching device ID
+        similarity:
+          type: number
+          format: double
+          description: Similarity score between 0 and 1
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key passed as a Bearer token in the Authorization header
+x-provenance:
+  method: searched
+  source: https://apis.appdome.com/reference
+  harvested: '2026-10-14'
+  tool: harvest-readme-openapi.py
+  note: Assembled verbatim from the OpenAPI definition ReadMe embeds in each operation page of the provider's developer portal; paths and components merged by API title, nothing authored.
+  assembled_from:
+  - https://apis.appdome.com/reference/post_v1-devicematch-compare.md
+  - https://apis.appdome.com/reference/post_v1-devicematch-discover.md
+  merge:
+    pages: 2
+    deduped: 1
+    conflicts_kept_first: 0
