@@ -1,0 +1,529 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Appdome API Team Management API
+servers:
+- url: https://fusion.appdome.com/api/v1
+  description: Main Appdome API Server
+- url: '{aws_upload_link}'
+  description: S3 Upload URL
+  variables:
+    aws_upload_link:
+      default: ''
+      description: The S3 bucket name from the pre-signed URL. Obtained from 'Get AWS Upload Link' route.
+tags:
+- name: API Team Management
+paths:
+  /myCompany/teams:
+    post:
+      tags:
+      - API Team Management
+      description: Allows you to create a new company team and add team members that belong to your company.
+      summary: Create a Company Team API
+      parameters: []
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The new team data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  team:
+                    type: object
+                    example:
+                      id: 064003c0-6472-11eb-a118-fddfdd51
+                      name: Team1
+                      description: The Number 1 team
+                  added_users:
+                    type: array
+                    description: array of added users
+                    items:
+                      type: string
+                      example:
+                      - a251c0a0-47-11eb-a077-651fccaf6b90
+                      - a25sdfs0a0-47-11eb-a077-651fcsfsdfb90
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the new team
+                  example: Team 1
+                description:
+                  type: string
+                  description: The team description
+                  example: The Number 1 Team
+                team_leaders_to_add:
+                  type: array
+                  description: Array of company users ID, mandatory field
+                  items:
+                    type: string
+                  example:
+                  - user_id1
+                  - user_id2
+      operationId: postMyCompanyTeams
+      x-operation-id-source: derived
+    get:
+      tags:
+      - API Team Management
+      description: Allows you to retrieve your company teams accounts status, permissions, and information.
+      summary: Retrieve All Company Teams API
+      parameters:
+      - in: query
+        name: page
+        description: The current page from the results - start from 1
+        schema:
+          type: integer
+      - in: query
+        name: limit
+        description: Number of results for page - default 20, max 100
+        schema:
+          type: integer
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The requested company data
+          content:
+            application/json:
+              schema:
+                type: array
+                description: array of teams
+                items:
+                  type: object
+                  example:
+                  - id: f7e71910-89bb-12ec-917f-1b9d901c5836
+                    name: Team1
+                    description: Testing Team
+                    type: trial
+                  - id: f7e71910-89bb-12ec-917f-1b9d901c5837
+                    name: Team2
+                    description: Testing Team
+                    type: uat
+                  - id: f7e71910-89bb-12ec-917f-1b9d901c5838
+                    name: Team3
+                    description: Testing Team
+                    type: prod
+      operationId: getMyCompanyTeams
+      x-operation-id-source: derived
+  /myCompany/teams/{teamId}:
+    get:
+      tags:
+      - API Team Management
+      description: Allows you to retrieve your company team and team members information.
+      summary: Retrieve a Company Team API
+      parameters:
+      - in: query
+        name: page
+        description: The current page of the team users - start from 1
+        schema:
+          type: string
+      - in: query
+        name: limit
+        description: Number of results for the team users page - default 20
+        schema:
+          type: string
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The requested team data
+          content:
+            application/json:
+              schema:
+                type: array
+                description: array of teams
+                items:
+                  type: object
+                  example:
+                    name: The team name
+                    id: The team ID
+                    description: The team description
+                    users:
+                    - user_id: The user ID
+                      email: user1@appdome.com
+                      first_name: user1 first name
+                      last_name: user1 last name
+                      role: Leader
+                      entitlements:
+                        FUSE_SECURITY: 'Yes'
+                        FUSE_ANTI_MALWARE: 'Yes'
+                        FUSE_EMM: 'Yes'
+                        FUSE_THREATS: 'Yes'
+                        FUSE_ACCOUNT_PROTECTION: 'Yes'
+                        FUSE_MOBILE_EDR: 'Yes'
+                        UPLOAD: 'Yes'
+                        DELETE: 'Yes'
+                        EDIT_FUSION_SETS: 'Yes'
+                        CUSTOMIZE: 'Yes'
+                        SIGN: 'Yes'
+                        APPROVE: 'Yes'
+                        DEPLOY: 'Yes'
+                        COPY_FUSION_SETS_INTO: 'Yes'
+                        COPY_FUSED_BUILDS_INTO: 'Yes'
+                    - user_id: The user ID
+                      email: user2@appdome.com
+                      first_name: user2 first name
+                      last_name: user2 last name
+                      role: Member
+                      entitlements:
+                        FUSE_SECURITY: 'No'
+                        FUSE_ANTI_MALWARE: 'No'
+                        FUSE_EMM: 'Yes'
+                        FUSE_THREATS: 'No'
+                        FUSE_ACCOUNT_PROTECTION: 'No'
+                        FUSE_MOBILE_EDR: 'No'
+                        UPLOAD: 'Yes'
+                        DELETE: 'Yes'
+                        EDIT_FUSION_SETS: 'Yes'
+                        CUSTOMIZE: 'No'
+                        SIGN: 'Yes'
+                        APPROVE: 'Yes'
+                        DEPLOY: 'Yes'
+                        COPY_FUSION_SETS_INTO: 'Yes'
+                        COPY_FUSED_BUILDS_INTO: 'Yes'
+      operationId: getMyCompanyTeamsByTeamId
+      x-operation-id-source: derived
+    put:
+      tags:
+      - API Team Management
+      description: Allows you to update an existing company team name and description.
+      summary: Update a Company Team API
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The updated team data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The team ID number
+                    example: 064003c0-6472-11eb-a118-fddfdd51
+                  name:
+                    type: string
+                    description: The team display name
+                    example: Team2
+                  description:
+                    type: string
+                    description: The team description
+                    example: The Number 2 team
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      operationId: putMyCompanyTeamsByTeamId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - API Team Management
+      description: Allows you to delete a company team. This action cannot be undone.
+      summary: Delete a Company Team API
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Team successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    description: HTTP status code
+                    example: 200
+        '400':
+          description: Error deleting team
+          content:
+            application/json: {}
+      operationId: deleteMyCompanyTeamsByTeamId
+      x-operation-id-source: derived
+  /myCompany/teams/{teamId}/removeUserFromTeam:
+    put:
+      tags:
+      - API Team Management
+      description: Allows you to remove a single user from your company team.
+      summary: Remove Users From a Company Team API
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The requested team data
+          content:
+            application/json:
+              schema:
+                type: array
+                description: array of users
+                items:
+                  type: object
+                  example:
+                  - users:
+                    - user_id: The user ID
+                      email: user2@appdome.com
+                      first_name: user2 first name
+                      last_name: user2 last name
+                      role: Member
+                      entitlements:
+                        FUSE_SECURITY: 'No'
+                        FUSE_ANTI_MALWARE: 'No'
+                        FUSE_EMM: 'Yes'
+                        FUSE_THREATS: 'No'
+                        FUSE_ACCOUNT_PROTECTION: 'No'
+                        UPLOAD: 'Yes'
+                        DELETE: 'Yes'
+                        EDIT_FUSION_SETS: 'Yes'
+                        CUSTOMIZE: 'No'
+                        SIGN: 'Yes'
+                        APPROVE: 'Yes'
+                        DEPLOY: 'Yes'
+                        COPY_FUSION_SETS_INTO: 'Yes'
+                        COPY_FUSED_BUILDS_INTO: 'Yes'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: The id of the user to remove
+                  example: user_id_1
+      operationId: putMyCompanyTeamsByTeamIdRemoveUserFromTeam
+      x-operation-id-source: derived
+  /myCompany/teams/{teamId}/updateUserEntitlements:
+    put:
+      tags:
+      - API Team Management
+      description: Allows you to add new company users into a team or update the role and entitlements of an existing member in the team. Each API request can hold up to 50 users.
+      summary: Add/Update Users to a Company Team API
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The requested team data
+          content:
+            application/json:
+              schema:
+                type: array
+                description: array of users
+                items:
+                  type: object
+                  example:
+                  - users:
+                    - user_id: The user ID
+                      email: user1@appdome.com
+                      first_name: user1 first name
+                      last_name: user1 last name
+                      role: Admin Lead
+                      entitlements:
+                        FUSE_SECURITY: 'Yes'
+                        FUSE_ANTI_MALWARE: 'Yes'
+                        FUSE_EMM: 'Yes'
+                        FUSE_THREATS: 'Yes'
+                        FUSE_ACCOUNT_PROTECTION: 'Yes'
+                        FUSE_MOBILE_EDR: 'No'
+                        UPLOAD: 'Yes'
+                        DELETE: 'Yes'
+                        EDIT_FUSION_SETS: 'Yes'
+                        CUSTOMIZE: 'Yes'
+                        SIGN: 'Yes'
+                        APPROVE: 'Yes'
+                        DEPLOY: 'Yes'
+                        COPY_FUSION_SETS_INTO: 'Yes'
+                        COPY_FUSED_BUILDS_INTO: 'Yes'
+                    - user_id: The user ID
+                      email: user2@appdome.com
+                      first_name: user2 first name
+                      last_name: user2 last name
+                      role: Member
+                      entitlements:
+                        FUSE_SECURITY: 'No'
+                        FUSE_ANTI_MALWARE: 'No'
+                        FUSE_EMM: 'Yes'
+                        FUSE_THREATS: 'No'
+                        FUSE_ACCOUNT_PROTECTION: 'No'
+                        FUSE_MOBILE_EDR: 'No'
+                        UPLOAD: 'Yes'
+                        DELETE: 'Yes'
+                        EDIT_FUSION_SETS: 'Yes'
+                        CUSTOMIZE: 'No'
+                        SIGN: 'Yes'
+                        APPROVE: 'Yes'
+                        DEPLOY: 'Yes'
+                        COPY_FUSION_SETS_INTO: 'Yes'
+                        COPY_FUSED_BUILDS_INTO: 'Yes'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users_to_add:
+                  type: array
+                  description: Array of users to add or update (max 50)
+                  maxItems: 50
+                  items:
+                    type: object
+                    required:
+                    - user_id
+                    properties:
+                      user_id:
+                        type: string
+                        description: The user ID
+                        example: user_id_1
+                      role:
+                        type: string
+                        enum:
+                        - Admin Lead
+                        - Team Lead
+                        - Defense Lead
+                        - Member
+                        - Support
+                        description: 'Role: Admin Lead, Team Lead, Defense Lead, Member, or Support'
+                        example: Member
+                      entitlements:
+                        type: object
+                        description: User entitlements object
+                        example:
+                          UPLOAD: 'YES'
+                          FUSE_SECURITY: 'YES'
+                          SIGN: 'YES'
+                          COPY_FUSION_SETS_INTO: 'YES'
+                    example:
+                      user_id: user_id_1
+                      role: Member
+                      entitlements:
+                        UPLOAD: 'YES'
+                        FUSE_SECURITY: 'YES'
+                        SIGN: 'YES'
+                        COPY_FUSION_SETS_INTO: 'YES'
+                  example:
+                  - user_id: user_id_1
+                    role: Member
+                    entitlements:
+                      UPLOAD: 'YES'
+                      FUSE_SECURITY: 'YES'
+                      SIGN: 'YES'
+                      COPY_FUSION_SETS_INTO: 'YES'
+                  - user_id: user_id_2
+                    role: Admin Lead
+                    entitlements:
+                      DELETE: 'YES'
+                      COPY_FUSED_BUILDS_INTO: 'YES'
+                      SIGN: 'YES'
+                      COPY_FUSION_SETS_INTO: 'YES'
+      operationId: putMyCompanyTeamsByTeamIdUpdateUserEntitlements
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+x-provenance:
+  method: searched
+  source: https://apis.appdome.com/reference
+  harvested: '2026-10-14'
+  tool: harvest-readme-openapi.py
+  note: Assembled verbatim from the OpenAPI definition ReadMe embeds in each operation page of the provider's developer portal; paths and components merged by API title, nothing authored.
+  assembled_from:
+  - https://apis.appdome.com/reference/delete_my-library-apps.md
+  - https://apis.appdome.com/reference/delete_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/delete_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_events.md
+  - https://apis.appdome.com/reference/get_fusion-set-compare.md
+  - https://apis.appdome.com/reference/get_fusion-set-fusionsetid-export-json.md
+  - https://apis.appdome.com/reference/get_fusion-set-history.md
+  - https://apis.appdome.com/reference/get_my-library-apps.md
+  - https://apis.appdome.com/reference/get_mycompany-events.md
+  - https://apis.appdome.com/reference/get_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/get_mycompany-teams.md
+  - https://apis.appdome.com/reference/get_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_mycompany-users.md
+  - https://apis.appdome.com/reference/get_sessions-limit.md
+  - https://apis.appdome.com/reference/get_tasks-parent-task-id-deploy-script.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-appdome-test-result.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate-json.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-buildapp.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-obfuscationmapping.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-status.md
+  - https://apis.appdome.com/reference/get_upload-app-id-status.md
+  - https://apis.appdome.com/reference/get_upload-link.md
+  - https://apis.appdome.com/reference/get_validation-appid-status.md
+  - https://apis.appdome.com/reference/post_build-to-test-autodev.md
+  - https://apis.appdome.com/reference/post_build-to-test-build.md
+  - https://apis.appdome.com/reference/post_build-to-test-context.md
+  - https://apis.appdome.com/reference/post_build-to-test-privatesign.md
+  - https://apis.appdome.com/reference/post_build-to-test-sign.md
+  - https://apis.appdome.com/reference/post_mycompany-teams.md
+  - https://apis.appdome.com/reference/post_mycompany-users-userid-refreshtoken.md
+  - https://apis.appdome.com/reference/post_mycompany-users.md
+  - https://apis.appdome.com/reference/post_pwappload.md
+  - https://apis.appdome.com/reference/post_refreshapitoken.md
+  - https://apis.appdome.com/reference/post_release-fs-fs-id.md
+  - https://apis.appdome.com/reference/post_tasks-appdometest.md
+  - https://apis.appdome.com/reference/post_tasks-autodev.md
+  - https://apis.appdome.com/reference/post_tasks-build.md
+  - https://apis.appdome.com/reference/post_tasks-context.md
+  - https://apis.appdome.com/reference/post_tasks-privatesign.md
+  - https://apis.appdome.com/reference/post_tasks-sign.md
+  - https://apis.appdome.com/reference/post_upload-using-link.md
+  - https://apis.appdome.com/reference/post_upload.md
+  - https://apis.appdome.com/reference/post_validation-upload.md
+  - https://apis.appdome.com/reference/post_verify-certificate.md
+  - https://apis.appdome.com/reference/put_amazon-upload-link.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-removeuserfromteam.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-updateuserentitlements.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid-blockuser.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid.md
+  merge:
+    pages: 51
+    deduped: 50
+    conflicts_kept_first: 0

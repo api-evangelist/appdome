@@ -1,0 +1,655 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Appdome API Account Maintenance API
+servers:
+- url: https://fusion.appdome.com/api/v1
+  description: Main Appdome API Server
+- url: '{aws_upload_link}'
+  description: S3 Upload URL
+  variables:
+    aws_upload_link:
+      default: ''
+      description: The S3 bucket name from the pre-signed URL. Obtained from 'Get AWS Upload Link' route.
+tags:
+- name: API Account Maintenance
+paths:
+  /events:
+    get:
+      tags:
+      - API Account Maintenance
+      description: 'DEV-Logs™ REST API for versioning and auditing purposes.
+
+
+        The fields parameter is used to filter the fields that are returned in the response.
+
+
+        When fields is provided, timestamp is always included and missing fields are not included in the response.
+
+
+        The fields are dynamic depending on the response, for example: "data.message_policy.debuggable.serverMode,data.message_policy.emulator_detection.mode"'
+      summary: Appdome Audit Log - Team Events
+      parameters:
+      - in: query
+        name: start_date
+        required: false
+        description: mm/dd/yyyy start_date cannot be earlier than 3 months ago
+        schema:
+          type: string
+      - in: query
+        name: end_date
+        required: false
+        description: mm/dd/yyyy end_date should be after start_date
+        schema:
+          type: string
+      - in: query
+        name: team_id
+        description: personal or team id
+        schema:
+          type: string
+          default: personal
+        required: true
+      - in: query
+        name: page
+        description: The current page from the results - start from 0
+        schema:
+          type: string
+      - in: query
+        name: per_page
+        description: Number of results for page - default 30
+        schema:
+          type: string
+      - in: query
+        name: fields
+        description: Comma-separated list of fields to include in each event, timestamp is always included
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The requested team audit logs
+          content:
+            application/json:
+              schema:
+                type: array
+                description: array of logs
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 5edf1620-4fca-11ed-98f2-3d22aa67eaf2
+                    code:
+                      type: string
+                      example: 1396
+                    level:
+                      type: string
+                      example: 20
+                    timestamp:
+                      type: string
+                      example: '2022-10-19T16:23:31.202Z'
+                    message:
+                      type: string
+                      example: Successfully decoded  Empty Android App  for Android version 1.2.3 (3.5)  },via external API
+                    account_id:
+                      type: string
+                      example: 0a7fa790-fadc-11ec-8654-3113024f3356
+                    username:
+                      type: string
+                      example: john@doe.com
+                    app_id:
+                      type: string
+                      example: 291f7930-4fca-11ed-98f2-3d22aa67eaf2
+                    app_pack_bundle_display_name:
+                      type: string
+                      example: Empty Android App
+                    app_pack_bundle_identifier:
+                      type: string
+                      example: com.appdome.emptyandroidapp
+                    app_pack_bundle_version:
+                      type: string
+                      example: 1.2.3 (3.5)
+                    checksum:
+                      type: string
+                      example: 4c8ff3fbf460aba2859d3ab06b1cce6b4d4cc031b012a213449640ff9a20acb7
+                example:
+                - id: 5edf1620-4fca-11ed-98f2-3d22aa67eaf2
+                  code: 1396
+                  level: 20
+                  timestamp: '2022-10-19T16:23:31.202Z'
+                  message: Successfully decoded  Empty Android App  for Android version 1.2.3 (3.5)  via external API
+                  account_id: 0a7fa790-fadc-11ec-8654-3113024f3356
+                  username: john@doe.com
+                  app_id: 291f7930-4fca-11ed-98f2-3d22aa67eaf2
+                  app_pack_bundle_display_name: Empty Android App
+                  app_pack_bundle_identifier: com.appdome.emptyandroidapp
+                  app_pack_bundle_version: 1.2.3 (3.5)
+                  checksum: 4c8ff3fbf460aba2859d3ab06b1cce6b4d4cc031b012a213449640ff9a20acb7
+                - id: 51ef9fc0-4fca-11ed-98f2-3d22aa67eaf2
+                  code: 1395
+                  level: 20
+                  timestamp: '2022-10-19T16:23:09.500Z'
+                  message: Started decoding  Empty Android App  for Android version 1.2.3 (3.5)  via external API
+                  account_id: 0a7fa790-fadc-11ec-8654-3113024f3356
+                  username: john@doe.com
+                  app_id: 291f7930-4fca-11ed-98f2-3d22aa67eaf2
+                  app_pack_bundle_display_name: Empty Android App
+                  app_pack_bundle_identifier: com.appdome.emptyandroidapp
+                  app_pack_bundle_version: 1.2.3 (3.5)
+                  checksum: 4c8ff3fbf460aba2859d3ab06b1cce6b4d4cc031b012a213449640ff9a20acb7
+                - id: 51ebcf30-4fca-11ed-98f2-3d22aa67eaf2
+                  code: 3021
+                  level: 20
+                  timestamp: '2022-10-19T16:23:09.475Z'
+                  message: ' John Doe   john@doe.com  added app  Empty Android App  for Android version 1.2.3 (3.5)  to team John3.7 via external API'
+                  account_id: 0a7fa790-fadc-11ec-8654-3113024f3356
+                  username: john@doe.com
+                  app_id: 291f7930-4fca-11ed-98f2-3d22aa67eaf2
+                  app_pack_bundle_display_name: Empty Android App
+                  app_pack_bundle_identifier: com.appdome.emptyandroidapp
+                  app_pack_bundle_version: 1.2.3 (3.5)
+                  checksum: 4c8ff3fbf460aba2859d3ab06b1cce6b4d4cc031b012a213449640ff9a20acb7
+      operationId: getEvents
+      x-operation-id-source: derived
+  /fusion_set/compare:
+    get:
+      tags:
+      - API Account Maintenance
+      description: REST API for Comparing Two Fusion Sets
+      summary: Compare Fusion Set
+      parameters:
+      - in: query
+        name: original_fs_id
+        required: true
+        description: Original fusion set id
+        schema:
+          type: string
+      - in: query
+        name: comparison_fs_id
+        required: true
+        description: Compare fusion set id
+        schema:
+          type: string
+      - in: query
+        name: app_id
+        required: false
+        description: App id
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Fusion sets details with diff
+          content:
+            application/json:
+              schema:
+                type: object
+                description: json
+                example: {}
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: forbidden
+                  messages:
+                    type: string
+                    example: The requested Fusion Set is not associated with the allowed workspace.
+                  statusCode:
+                    type: number
+                    example: 403
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      operationId: getFusionSetCompare
+      x-operation-id-source: derived
+  /fusion_set/{fusionSetId}/export-json:
+    get:
+      tags:
+      - API Account Maintenance
+      description: Export Fusion Set as JSON on the Appdome Platform.
+      summary: Export Fusion Set as JSON
+      parameters:
+      - name: app_id
+        in: query
+        schema:
+          type: string
+      - name: fusionSetId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Fusion Set as JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                description: JSON
+                example: {}
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: forbidden
+                  messages:
+                    type: string
+                    example: The requested Fusion Set is not associated with the allowed workspace.
+                  statusCode:
+                    type: number
+                    example: 403
+      operationId: getFusionSetByFusionSetIdExportJson
+      x-operation-id-source: derived
+  /fusion_set_history:
+    get:
+      tags:
+      - API Account Maintenance
+      description: 'REST API for Comparing Fusion Set History
+
+        Fusion Set History per License
+
+        The availability of Fusion Set History varies depending on your license level:
+
+
+        Go: Versions are available for up to 30 days.
+
+
+        Dev: Versions are available for up to 90 days.
+
+
+        Dev+: Versions are available for up to 180 days.
+
+
+        SRM: Versions are available for up to 360 days.
+
+
+        With SRM-C: Versions are available indefinitely.'
+      summary: Fusion Set History
+      parameters:
+      - in: query
+        name: fs_id
+        required: true
+        description: Fusion Set ID
+        schema:
+          type: string
+      - in: query
+        name: start_date
+        required: true
+        description: mm/dd/yyyy
+        schema:
+          type: string
+      - in: query
+        name: end_date
+        required: true
+        description: mm/dd/yyyy end_date should be after start_date
+        schema:
+          type: string
+      - in: query
+        name: team_id
+        required: true
+        description: Personal or Team ID
+        schema:
+          type: string
+          default: personal
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Fusion Sets History
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The History The Fusion Set between the provided dates
+                properties:
+                  fusion_set:
+                    type: object
+                    example: {}
+                  common_diff:
+                    type: object
+                    example: {}
+                  are_equal:
+                    type: boolean
+                    example: false
+                  first_version:
+                    type: number
+                    example: 1
+                  last_version:
+                    type: number
+                    example: 10
+                  total_versions_between:
+                    type: number
+                    example: 10
+                  origin_date:
+                    type: string
+                    example: Jan 1, 2000
+                  compare_date:
+                    type: string
+                    example: Dec 30, 2000
+                  diff:
+                    type: object
+                    example: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Bad Request
+                  message:
+                    type: string
+                    example: Invalid request query input
+                  statusCode:
+                    type: number
+                    example: 400
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Not Found
+                  message:
+                    type: string
+                    example: Not Found
+                  statusCode:
+                    type: number
+                    example: 404
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      operationId: getFusionSetHistory
+      x-operation-id-source: derived
+  /my-library-apps:
+    delete:
+      tags:
+      - API Account Maintenance
+      description: Delete Apps from the Appdome Platform.
+      summary: Delete Apps
+      parameters:
+      - name: ids
+        in: query
+        schema:
+          type: string
+      - name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      - name: isFutureDelete
+        in: query
+        schema:
+          type: boolean
+          default: true
+      - name: deleteAllBuilds
+        in: query
+        schema:
+          type: boolean
+          default: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Successfully deleted.
+          content:
+            application/json: {}
+        '400':
+          description: Error in provided query params - either ids, team_id of is_future_delete params are invalid.
+          content:
+            application/json: {}
+      operationId: deleteMyLibraryApps
+      x-operation-id-source: derived
+    get:
+      tags:
+      - API Account Maintenance
+      description: List personal or teams apps on the Appdome platform.
+      summary: List Apps
+      parameters:
+      - name: team_id
+        in: query
+        schema:
+          type: string
+          format: uuid
+          default: personal
+        required: true
+      - name: limit
+        in: query
+        schema:
+          type: number
+          format: float
+          default: 50
+      - name: page
+        in: query
+        schema:
+          type: number
+          format: float
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: List of apps.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    description: array of messages
+                    items:
+                      type: object
+                      example:
+                        id: 0b8a6ee0-7601-11ed-aad9-357a56696d41
+                        account_id: 708f41b1-7491-11ed-8f38-e568d6d77cc3
+                        user_id: 708f41b0-7491-11ed-8f38-e568d6d77cc3
+                        creation_time: '2022-12-07T07:31:57.000Z'
+                        pack_name: pack_name.apk
+                        pack_size: 4194485
+                        pack_type: apk
+                        pack_bundle_identifier: com.pack_name
+                        pack_bundle_version: 1.0.20
+                        pack_bundle_display_name: PackName
+                        pack_bundle_build_number: '20'
+                        pack_app_store_description: null
+                        status: active
+        '400':
+          description: Provided team_id is invalid.
+          content:
+            application/json: {}
+      operationId: getMyLibraryApps
+      x-operation-id-source: derived
+  /refreshApiToken:
+    post:
+      tags:
+      - API Account Maintenance
+      description: This API generates a new Appdome’s Build2Secure API Token for the specified user.
+      summary: Refresh Appdome’s Build2Secure API Token
+      parameters: []
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: new api token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_token:
+                    type: string
+                    description: new api token
+                    example: dkG90pp9LPsXUC_pPWO0qA
+      operationId: postRefreshApiToken
+      x-operation-id-source: derived
+  /release_fs/{fs_id}:
+    post:
+      tags:
+      - API Account Maintenance
+      description: Releases a fusion set from one team to another. Requires the user to be a member of both teams.
+      summary: Release Fusion Set
+      parameters:
+      - description: uuid or "personal"
+        name: team_id
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - description: UUID of the fusion set ID
+        example: 123e4567-e89b-12d3-a456-426614174000
+        name: fs_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: new Fusion Set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new_fusion_set_id:
+                    type: string
+                    description: new_fusion_set_id
+                    example: adfd29c0-c10d-11ef-b0ba-3d7929b55621
+        '400':
+          description: Can not Release fusion set to the same team.
+          content:
+            application/json: {}
+        '404':
+          description: Can not find fusion set.
+          content:
+            application/json: {}
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      operationId: postReleaseFsByFsId
+      x-operation-id-source: derived
+  /sessions-limit:
+    get:
+      tags:
+      - API Account Maintenance
+      description: Returns number of Active Session and allowed limit.
+      summary: Get Active Sessions
+      parameters:
+      - name: team_id
+        in: query
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Active Sessions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  active_sessions:
+                    type: number
+                    example: 2
+                    description: Number of Active Sessions
+                  limit:
+                    type: number
+                    example: 5
+                    description: Limit of Active Sessions
+      operationId: getSessionsLimit
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+x-provenance:
+  method: searched
+  source: https://apis.appdome.com/reference
+  harvested: '2026-10-14'
+  tool: harvest-readme-openapi.py
+  note: Assembled verbatim from the OpenAPI definition ReadMe embeds in each operation page of the provider's developer portal; paths and components merged by API title, nothing authored.
+  assembled_from:
+  - https://apis.appdome.com/reference/delete_my-library-apps.md
+  - https://apis.appdome.com/reference/delete_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/delete_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_events.md
+  - https://apis.appdome.com/reference/get_fusion-set-compare.md
+  - https://apis.appdome.com/reference/get_fusion-set-fusionsetid-export-json.md
+  - https://apis.appdome.com/reference/get_fusion-set-history.md
+  - https://apis.appdome.com/reference/get_my-library-apps.md
+  - https://apis.appdome.com/reference/get_mycompany-events.md
+  - https://apis.appdome.com/reference/get_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/get_mycompany-teams.md
+  - https://apis.appdome.com/reference/get_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_mycompany-users.md
+  - https://apis.appdome.com/reference/get_sessions-limit.md
+  - https://apis.appdome.com/reference/get_tasks-parent-task-id-deploy-script.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-appdome-test-result.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate-json.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-buildapp.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-obfuscationmapping.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-status.md
+  - https://apis.appdome.com/reference/get_upload-app-id-status.md
+  - https://apis.appdome.com/reference/get_upload-link.md
+  - https://apis.appdome.com/reference/get_validation-appid-status.md
+  - https://apis.appdome.com/reference/post_build-to-test-autodev.md
+  - https://apis.appdome.com/reference/post_build-to-test-build.md
+  - https://apis.appdome.com/reference/post_build-to-test-context.md
+  - https://apis.appdome.com/reference/post_build-to-test-privatesign.md
+  - https://apis.appdome.com/reference/post_build-to-test-sign.md
+  - https://apis.appdome.com/reference/post_mycompany-teams.md
+  - https://apis.appdome.com/reference/post_mycompany-users-userid-refreshtoken.md
+  - https://apis.appdome.com/reference/post_mycompany-users.md
+  - https://apis.appdome.com/reference/post_pwappload.md
+  - https://apis.appdome.com/reference/post_refreshapitoken.md
+  - https://apis.appdome.com/reference/post_release-fs-fs-id.md
+  - https://apis.appdome.com/reference/post_tasks-appdometest.md
+  - https://apis.appdome.com/reference/post_tasks-autodev.md
+  - https://apis.appdome.com/reference/post_tasks-build.md
+  - https://apis.appdome.com/reference/post_tasks-context.md
+  - https://apis.appdome.com/reference/post_tasks-privatesign.md
+  - https://apis.appdome.com/reference/post_tasks-sign.md
+  - https://apis.appdome.com/reference/post_upload-using-link.md
+  - https://apis.appdome.com/reference/post_upload.md
+  - https://apis.appdome.com/reference/post_validation-upload.md
+  - https://apis.appdome.com/reference/post_verify-certificate.md
+  - https://apis.appdome.com/reference/put_amazon-upload-link.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-removeuserfromteam.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-updateuserentitlements.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid-blockuser.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid.md
+  merge:
+    pages: 51
+    deduped: 50
+    conflicts_kept_first: 0

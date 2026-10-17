@@ -1,0 +1,2228 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Appdome Tasks API
+servers:
+- url: https://fusion.appdome.com/api/v1
+  description: Main Appdome API Server
+- url: '{aws_upload_link}'
+  description: S3 Upload URL
+  variables:
+    aws_upload_link:
+      default: ''
+      description: The S3 bucket name from the pre-signed URL. Obtained from 'Get AWS Upload Link' route.
+tags:
+- name: Tasks
+paths:
+  /Amazon upload link>:
+    put:
+      tags:
+      - Tasks
+      description: This endpoint allows you to upload an app or SDK to a public AWS URL obtained from the "Get Public Link" request. The URL serves as the endpoint for this PUT request. Ensure that the app or SDK you want to upload is included in the request body. The link will expire after a pre-defined period of 30 minutes, so the upload must be completed within this timeframe.
+      summary: Upload to AWS
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  description: The app/sdk file to upload - should be binary file
+                  type: string
+              required:
+              - fileName
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: s3 response
+      operationId: putAmazon upload link>
+      x-operation-id-source: derived
+  /build-to-test#autoDev:
+    post:
+      tags:
+      - Tasks
+      description: 'Available overrides for Auto-DEV Signing Task:
+
+
+        IOS:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        manual_entitlements_matching
+
+        Manual Entitlements Matching
+
+        Boolean
+
+
+        Android:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_sha1_fingerprint
+
+        certificate SHA-1 fingerprint
+
+        String
+
+        When signing Android apps using Private Signing or Auto-DEV Signing, please add the certificate SHA-1 fingerprint as an override
+
+
+        signing_keystore_use_google_signing
+
+        Use Google Play App Signing
+
+        Boolean
+
+        Send true if you want to use different sha1 fingerprint, when true ''signing_keystore_google_signing_sha1_key'' is required.
+
+
+        signing_keystore_google_signing_sha1_key
+
+        App Signing Certificate Fingerprint
+
+        String
+
+        If ''signing_keystore_use_google_signing'' is true, attach the string of your sha1 fingerprint.
+
+
+        signing_keystore_google_signing_upgrade
+
+        Google Play Upgrade Signing Key
+
+        Boolean
+
+        Send true if you upgraded your app signing key for new installs.
+
+
+        signing_keystore_google_signing_sha1_key_2nd_cert
+
+        Upgraded Certificate Fingerprint
+
+        String
+
+        Your past key signing certificate fingerprint is required to tamper-proof built applications and allow them to run on legacy and new installs.
+
+
+        trusted_signing_fingerprint_list
+
+        Trusted Signing Fingerprint List
+
+        Array of Objects
+
+        Array of trusted signing certificate fingerprints. Each object contains: SHA (string, SHA-1 or SHA-256 fingerprint), TrustedStoreSigning {optional} (boolean). Android only.
+
+        Must not be used together with signing_keystore_use_google_signing, signing_keystore_google_signing_upgrade, or signing_keystore_google_signing_sha1_key_2nd_cert'
+      summary: Auto-DEV Sign an App for Testing
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - sign_script
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'example: {"signing_sha1_fingerprint":                                   "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e"} or {"trusted_signing_fingerprint_list":                                   [{"SHA": "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e", "TrustedStoreSigning": true }]}'
+                provisioning_profile:
+                  type: string
+                  format: binary
+                  description: (IOS only) underscore is not accepted in filename
+                entitlements_files:
+                  type: string
+                  format: binary
+                  description: (IOS only) Required if "manual_entitlements_matching" is true, underscore is not accepted in filename
+      operationId: postBuildToTest#autoDev
+      x-operation-id-source: derived
+  /build-to-test#build:
+    post:
+      tags:
+      - Tasks
+      description: 'This API allows you to build and customize a mobile app or SDK with testing.
+
+        After you upload your App/SDK and obtain the Application ID, you can build it for testing using an existing Fusion Set.
+
+        The `fusion_set_id` is required to initiate the build (fuse) action.
+
+        Upon completion of the build, a `parent_task_id` (known as the "Appdome Build ID") is generated, which is required for any subsequent task actions.
+
+        This endpoint supports several customizations (overrides) for the build task, as detailed below.
+
+
+        How to Obtain the Application ID:
+
+
+        After successfully uploading your app to the Appdome platform, follow these steps:
+
+
+        Navigate to the sidebar where your app is listed.
+
+
+        The Application ID will be visible next to the app details, and you can copy it directly from there.
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        user_agent
+
+        User Agent Customization
+
+        Boolean
+
+        Must use with user_agent_value
+
+
+        user_agent_value
+
+        User-Agent Header
+
+        String
+
+
+        extended_logs
+
+        Diagnostic Logs
+
+        Boolean
+
+        Only if enabled for the user.
+
+
+        build_to_test_vendor
+
+        supported Testing Service
+
+        String
+
+        One of the following values:
+
+
+        AUTOMATION_AWS_DEVICE_FARM
+
+
+        AUTOMATION_BITBAR
+
+
+        AUTOMATION_BROWSERSTACK
+
+
+        AUTOMATION_LAMBDATEST
+
+
+        AUTOMATION_SAUCELABS
+
+
+        AUTOMATION_FIREBASE
+
+
+        AUTOMATION_KOBITON
+
+
+        AUTOMATION_KATALON
+
+
+        AUTOMATION_PERFECTO
+
+
+        AUTOMATION_TRICENTIS_DEVICE_CLOUD
+
+
+        build_to_test_message
+
+        build_to_test_message
+
+        String
+
+        Must use with build_to_test_vendor.'
+      summary: Build an App/SDK for Testing
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - fuse
+                app_id:
+                  type: string
+                fusion_set_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'Fuse overrides enable modification of fusion set options for specific tasks. Learn more <a href=''https://apis.appdome.com/docs/build-an-app#overrides''>here</a>. <br/>Example input: {"build_to_test_vendor": "AUTOMATION_SAUCELABS", "build_to_test_message": "oops, something went wrong..."} --- example for Certificate Pinning: {"mitm_host_server_pinned_certs_list":[{"value": {"mitm_host_server_pinned_certs_type": "no_pinning","mitm_host_server_pinned_certs_domain":"{URL}", "mitm_host_server_pinned_certs_file_filename": "{filename}"}}]}'
+                baseline_profile:
+                  type: string
+                  format: binary
+                  description: Android only, a baseline profile file in a zip archive
+                startup_profile:
+                  type: string
+                  format: binary
+                  description: Android only, a startup profile file in a zip archive
+                input_mapping:
+                  type: string
+                  format: binary
+                  description: Android only, a minimization or obfuscation mapping file in a txt file
+                mobile_anti_bot_list[{index}].value.payload_signing_key_app_specific:
+                  type: string
+                  format: binary
+                  description: The index assigns each Payload Signing Key to a specific host profile. The first key is always index 0. Additional keys are indexed as 1, 2, 3, etc., for separate host profiles.
+                mitm_host_server_pinned_certs_list[index].value.mitm_host_server_pinned_certs_file_content:
+                  type: string
+                  format: binary
+                  description: 'The index assigns each Certificate to a specific pinning profile. The first key is always index 0. Additional keys are indexed as 1, 2, 3, etc., for separate host profiles.
+
+                    There is an option to specify the exact host as stated in the original fusion set and it will be overridden by host name instead of index location'
+      operationId: postBuildToTest#build
+      x-operation-id-source: derived
+  /build-to-test#context:
+    post:
+      tags:
+      - Tasks
+      description: 'The available overrides for the Context task are:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        icon_overlay
+
+        Add Favicon
+
+        Boolean
+
+        Must use with icon_overlay_scale, icon_overlay_position, icon_overlay_filename
+
+
+        Must also add Form data icon_overlay_s3 with an icon file (see above)
+
+
+        icon_overlay_scale
+
+        Scale
+
+        Number between 20 and 50
+
+
+        icon_overlay_position
+
+        Favicon Position
+
+        ‘Top Right’, ‘Top Left’, ‘Bottom Right’, ‘Bottom Left’
+
+
+        customize_url_enable
+
+        Private URL
+
+        Boolean
+
+        Must use with customize_url_value, customize_url_key.
+
+
+        customize_url_value
+
+        Private URL Value
+
+        String
+
+
+        customize_url_key
+
+        Private URL Identifier
+
+        String
+
+
+        app_customization_pack_bundle_version
+
+        App Version
+
+        String
+
+
+        app_customization_pack_bundle_identifier
+
+        App Bundle ID
+
+        String
+
+
+        app_customization_pack_bundle_display_name
+
+        App Display Name
+
+        String
+
+
+        app_customization_pack_bundle_build_number
+
+        App Version Code
+
+        Number
+
+
+        app_customization_key_value_list
+
+        Custom Values
+
+        JSON
+
+        LifeCycle, Context'
+      summary: Add Context to an App for Testing
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - context
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'example: {"app_customization_pack_bundle_identifier": "com.appdome.test"}'
+      operationId: postBuildToTest#context
+      x-operation-id-source: derived
+  /build-to-test#privateSign:
+    post:
+      tags:
+      - Tasks
+      description: 'Available overrides for Private Signing Task:
+
+
+        IOS:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        manual_entitlements_matching
+
+        Manual Entitlements Matching
+
+        Boolean
+
+
+        Android:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_sha1_fingerprint
+
+        certificate SHA-1 fingerprint
+
+        String
+
+        When signing Android apps using Private Signing or Auto-DEV Signing, please add the certificate SHA-1 fingerprint as an override
+
+
+        signing_keystore_use_google_signing
+
+        Use Google Play App Signing
+
+        Boolean
+
+        Send true if you want to use different sha1 fingerprint, when true ''signing_keystore_google_signing_sha1_key'' is required.
+
+
+        signing_keystore_google_signing_sha1_key
+
+        App Signing Certificate Fingerprint
+
+        String
+
+        If ''signing_keystore_use_google_signing'' is true, attach the string of your sha1 fingerprint.
+
+
+        signing_keystore_google_signing_upgrade
+
+        Google Play Upgrade Signing Key
+
+        Boolean
+
+        Send true if you upgraded your app signing key for new installs.
+
+
+        signing_keystore_google_signing_sha1_key_2nd_cert
+
+        Upgraded Certificate Fingerprint
+
+        String
+
+        Your past key signing certificate fingerprint is required to tamper-proof built applications and allow them to run on legacy and new installs.
+
+
+        trusted_signing_fingerprint_list
+
+        Trusted Signing Fingerprint List
+
+        Array of Objects
+
+        Array of trusted signing certificate fingerprints. Each object contains: SHA (string, SHA-1 or SHA-256 fingerprint), TrustedStoreSigning {optional} (boolean). Android only.
+
+        Must not be used together with signing_keystore_use_google_signing, signing_keystore_google_signing_upgrade, or signing_keystore_google_signing_sha1_key_2nd_cert'
+      summary: Private Sign an App for Testing
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - seal
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'example: {"signing_sha1_fingerprint":                                   "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e"} or {"trusted_signing_fingerprint_list":                                   [{"SHA": "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e", "TrustedStoreSigning": true }]}'
+                provisioning_profile:
+                  type: string
+                  format: binary
+                  description: underscore is not accepted in filename
+                entitlements_files:
+                  type: string
+                  format: binary
+                  description: (IOS only) Required if "manual_entitlements_matching" is true, underscore is not accepted in filename
+      operationId: postBuildToTest#privateSign
+      x-operation-id-source: derived
+  /build-to-test#sign:
+    post:
+      tags:
+      - Tasks
+      description: 'Available overrides for the Signing Task:
+
+
+        IOS:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_p12_password
+
+        P12 Certificate Password
+
+        String
+
+
+        manual_entitlements_matching
+
+        Manual Entitlements Matching
+
+        Boolean
+
+
+        IOS SDK:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_p12_password
+
+        P12 Certificate Password
+
+        String
+
+
+        Android:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_keystore_use_google_signing
+
+        Use Google Play App Signing
+
+        Boolean
+
+        Must use with signing_keystore_google_signing_sha1_key
+
+
+        signing_keystore_google_signing_sha1_key
+
+        App Signing Certificate SHA-1 or SHA-256
+
+        String
+
+
+        signing_keystore_password
+
+        Signing Keystore Password
+
+        String
+
+
+        signing_keystore_alias
+
+        Signing Keystore Alias
+
+        String
+
+
+        signing_keystore_key_password
+
+        Signing Key Password
+
+        String
+
+
+        signing_keystore_google_signing_upgrade
+
+        Google Play Upgrade Signing Key
+
+        Boolean
+
+        Send true if you upgraded your app signing key for new installs.
+
+
+        signing_keystore_google_signing_sha1_key_2nd_cert
+
+        Upgraded Certificate Fingerprint
+
+        String
+
+        Your past key signing certificate fingerprint is required to tamper-proof built applications and allow them to run on legacy and new installs.
+
+
+        trusted_signing_fingerprint_list
+
+        Trusted Signing Fingerprint List
+
+        Array of Objects
+
+        Array of trusted signing certificate fingerprints. Each object contains: SHA (string, SHA-1 or SHA-256 fingerprint), TrustedStoreSigning {optional} (boolean). Android only.
+
+        Must not be used together with signing_keystore_use_google_signing, signing_keystore_google_signing_upgrade, or signing_keystore_google_signing_sha1_key_2nd_cert'
+      summary: Sign an App for Testing
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - sign
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'examples:  {"signing_p12_password": "my_password"} or {"trusted_signing_fingerprint_list": [{"SHA": "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e", "TrustedStoreSigning": true]}'
+                signing_p12_content:
+                  type: string
+                  format: binary
+                  description: (IOS only) underscore is not accepted in filename
+                provisioning_profile:
+                  type: string
+                  format: binary
+                  description: (IOS only) underscore is not accepted in filename
+                entitlements_files:
+                  type: string
+                  format: binary
+                  description: (IOS only) Required if "manual_entitlements_matching" is true, underscore is not accepted in filename
+                signing_keystore:
+                  type: string
+                  format: binary
+                  description: (Android only) underscore is not accepted in filename
+      operationId: postBuildToTest#sign
+      x-operation-id-source: derived
+  /pwappload:
+    post:
+      tags:
+      - Tasks
+      description: 'This API creates a Secure PWA™ app from a provided URL for iOS (ipa), Android (aab), or both platforms.
+
+        The request completes only after the PWA upload finishes. Use the returned App ID for the subsequent build flow.
+
+
+        iOS PWA builds
+
+
+        When pwa_platform is ipa or both, overrides is required and must include a base64-encoded provisioning profile:
+
+
+        {
+
+        "provisioning_profile": [
+
+        {
+
+        "filename": "[File Name]",
+
+        "content": "[BASE64 CONTENT]"
+
+        }
+
+        ]
+
+        }
+
+
+        Response
+
+
+        Returns an array of results (one entry per platform; two entries when pwa_platform is both). Each entry includes an app object with the App ID:
+
+
+        [
+
+        {
+
+        "app": {
+
+        "id": "5b4a3a56-1137-468e-bb82-375ca89e9b96",
+
+        "pack_type": "ipa",
+
+        "is_pwapp": true,
+
+        "status": "active"
+
+        }
+
+        }
+
+        ]
+
+
+        Use app.id with the regular build API to select a Fusion Set and continue the build flow.'
+      summary: Build a PWA
+      parameters:
+      - in: query
+        name: team_id
+        required: true
+        description: Personal or Team ID
+        schema:
+          type: string
+          default: personal
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Array of PWA upload results. Each item includes an app object with the Application ID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    app:
+                      type: object
+                      description: Uploaded PWA app. Use app.id as the Application ID for subsequent build/sign steps.
+                      properties:
+                        id:
+                          type: string
+                          example: 5b4a3a56-1137-468e-bb82-375ca89e9b96
+                          description: Application ID
+                        pack_type:
+                          type: string
+                          example: ipa
+                          description: Platform pack type (ipa or aab)
+                        is_pwapp:
+                          type: boolean
+                          example: true
+                        status:
+                          type: string
+                          example: active
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pwa_address:
+                  type: string
+                pwa_platform:
+                  type: string
+                pwa_app_name:
+                  type: string
+                overrides:
+                  type: string
+      operationId: postPwappload
+      x-operation-id-source: derived
+  /tasks#appdomeTest:
+    post:
+      tags:
+      - Tasks
+      description: 'This API runs Appdome’s Standard Launch Tests on a previously built and signed app.
+
+        Pass the `parent_task_id` (the “Appdome Build ID” returned by the build/fuse task) whose app has already been signed.
+
+        The test runs a fixed suite (first launch, second launch, and background launch) across Appdome’s device pool; no test configuration parameters are required.
+
+        Note: apps built via the Build-to-Test flow are not eligible — only regular fuse/build (then sign) apps can run Appdome Test.
+
+        Upon success, poll GET /tasks/{task_id}/status until the status is completed.'
+      summary: Run Appdome Test (Standard Launch Tests)
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created Appdome Test task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created Appdome Test task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - appdome_test
+                parent_task_id:
+                  type: string
+                  description: The Appdome Build ID of a built and signed app (non Build-to-Test lineage).
+      operationId: postTasks#appdomeTest
+      x-operation-id-source: derived
+  /tasks#autoDev:
+    post:
+      tags:
+      - Tasks
+      description: 'Available overrides for Auto-DEV Signing Task:
+
+
+        IOS:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        manual_entitlements_matching
+
+        Manual Entitlements Matching
+
+        Boolean
+
+
+        Android:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_sha1_fingerprint
+
+        certificate SHA-1 fingerprint
+
+        String
+
+        When signing Android apps using Private Signing or Auto-DEV Signing, please add the certificate SHA-1 fingerprint as an override
+
+
+        signing_keystore_use_google_signing
+
+        Use Google Play App Signing
+
+        Boolean
+
+        Send true if you want to use different sha1 fingerprint, when true ''signing_keystore_google_signing_sha1_key'' is required.
+
+
+        signing_keystore_google_signing_sha1_key
+
+        App Signing Certificate Fingerprint
+
+        String
+
+        If ''signing_keystore_use_google_signing'' is true, attach the string of your sha1 fingerprint.
+
+
+        signing_keystore_google_signing_upgrade
+
+        Google Play Upgrade Signing Key
+
+        Boolean
+
+        Send true if you upgraded your app signing key for new installs.
+
+
+        signing_keystore_google_signing_sha1_key_2nd_cert
+
+        Upgraded Certificate Fingerprint
+
+        String
+
+        Your past key signing certificate fingerprint is required to tamper-proof built applications and allow them to run on legacy and new installs.
+
+
+        trusted_signing_fingerprint_list
+
+        Trusted Signing Fingerprint List
+
+        Array of Objects
+
+        Array of trusted signing certificate fingerprints. Each object contains: SHA (string, SHA-1 or SHA-256 fingerprint), TrustedStoreSigning {optional} (boolean). Android only.
+
+        Must not be used together with signing_keystore_use_google_signing, signing_keystore_google_signing_upgrade, or signing_keystore_google_signing_sha1_key_2nd_cert'
+      summary: Auto-DEV Sign an App
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - sign_script
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'example: {"signing_sha1_fingerprint":                                   "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e"} or {"trusted_signing_fingerprint_list":                                   [{"SHA": "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e", "TrustedStoreSigning": true }]}'
+                provisioning_profile:
+                  type: string
+                  format: binary
+                  description: (IOS only) underscore is not accepted in filename
+                entitlements_files:
+                  type: string
+                  format: binary
+                  description: (IOS only) Required if "manual_entitlements_matching" is true, underscore is not accepted in filename
+      operationId: postTasks#autoDev
+      x-operation-id-source: derived
+  /tasks#build:
+    post:
+      tags:
+      - Tasks
+      description: 'This API allows you to build and customize a mobile app or SDK after uploading your files and obtaining an Application ID.
+
+        Utilizing existing Fusion Sets, this endpoint initiates the build process.
+
+        After building, the `task_id` , referred to as the "Appdome Build ID," is required for all subsequent tasks related to this build.
+
+
+        How to Obtain the Application ID:
+
+
+        After successfully uploading your app to the Appdome platform, follow these steps:
+
+
+        Navigate to the sidebar where your app is listed.
+
+
+        The Application ID will be visible next to the app details, and you can copy it directly from there.
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        user_agent
+
+        User Agent Customization
+
+        Boolean
+
+        Must use with user_agent_value
+
+
+        user_agent_value
+
+        User-Agent Header
+
+        String
+
+
+        extended_logs
+
+        Diagnostic Logs
+
+        Boolean
+
+        Only if enabled for the user.'
+      summary: Build an App/SDK
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - fuse
+                app_id:
+                  type: string
+                fusion_set_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'Fuse overrides enable modification of fusion set options for specific tasks. Learn more <a href=''https://apis.appdome.com/docs/build-an-app#overrides''>here</a>. <br/>Example input: {"extended_logs": true} --- example for Certificate Pinning: {"mitm_host_server_pinned_certs_list":[{"value": {"mitm_host_server_pinned_certs_type": "no_pinning","mitm_host_server_pinned_certs_domain":"{URL}", "mitm_host_server_pinned_certs_file_filename": "{filename}"}}]}'
+                baseline_profile:
+                  type: string
+                  format: binary
+                  description: Android only, a baseline profile file in a zip archive
+                startup_profile:
+                  type: string
+                  format: binary
+                  description: Android only, a startup profile file in a zip archive
+                input_mapping:
+                  type: string
+                  format: binary
+                  description: Android only, a minimization or obfuscation mapping file in a txt file
+                mobile_anti_bot_list[{index}].value.payload_signing_key_app_specific:
+                  type: string
+                  format: binary
+                  description: The index assigns each Payload Signing Key to a specific host profile. The first key is always index 0. Additional keys are indexed as 1, 2, 3, etc., for separate host profiles.
+                mitm_host_server_pinned_certs_list[index].value.mitm_host_server_pinned_certs_file_content:
+                  type: string
+                  format: binary
+                  description: 'The index assigns each Certificate to a specific pinning profile. The first key is always index 0. Additional keys are indexed as 1, 2, 3, etc., for separate host profiles.
+
+                    There is an option to specify the exact host as stated in the original fusion set and it will be overridden by host name instead of index location'
+      operationId: postTasks#build
+      x-operation-id-source: derived
+  /tasks#context:
+    post:
+      tags:
+      - Tasks
+      description: 'The available overrides for the Context task are:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        icon_overlay
+
+        Add Favicon
+
+        Boolean
+
+        Must use with icon_overlay_scale, icon_overlay_position, icon_overlay_filename
+
+
+        Must also add Form data icon_overlay_s3 with an icon file (see above)
+
+
+        icon_overlay_scale
+
+        Scale
+
+        Number between 20 and 50
+
+
+        icon_overlay_position
+
+        Favicon Position
+
+        ‘Top Right’, ‘Top Left’, ‘Bottom Right’, ‘Bottom Left’
+
+
+        customize_url_enable
+
+        Private URL
+
+        Boolean
+
+        Must use with customize_url_value, customize_url_key.
+
+
+        customize_url_value
+
+        Private URL Value
+
+        String
+
+
+        customize_url_key
+
+        Private URL Identifier
+
+        String
+
+
+        app_customization_pack_bundle_version
+
+        App Version
+
+        String
+
+
+        app_customization_pack_bundle_identifier
+
+        App Bundle ID
+
+        String
+
+
+        app_customization_pack_bundle_display_name
+
+        App Display Name
+
+        String
+
+
+        app_customization_pack_bundle_build_number
+
+        App Version Code
+
+        Number
+
+
+        app_customization_key_value_list
+
+        Custom Values
+
+        JSON
+
+        LifeCycle, Context'
+      summary: Add Context to an App
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - context
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'example: {"app_customization_pack_bundle_identifier": "com.appdome.test"}'
+      operationId: postTasks#context
+      x-operation-id-source: derived
+  /tasks#privateSign:
+    post:
+      tags:
+      - Tasks
+      description: 'Available overrides for Private Signing Task:
+
+
+        IOS:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        manual_entitlements_matching
+
+        Manual Entitlements Matching
+
+        Boolean
+
+
+        Android:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_sha1_fingerprint
+
+        certificate SHA-1 fingerprint
+
+        String
+
+        When signing Android apps using Private Signing or Auto-DEV Signing, please add the certificate SHA-1 fingerprint as an override
+
+
+        signing_keystore_use_google_signing
+
+        Use Google Play App Signing
+
+        Boolean
+
+        Send true if you want to use different sha1 fingerprint, when true ''signing_keystore_google_signing_sha1_key'' is required.
+
+
+        signing_keystore_google_signing_sha1_key
+
+        App Signing Certificate Fingerprint
+
+        String
+
+        If ''signing_keystore_use_google_signing'' is true, attach the string of your sha1 fingerprint.
+
+
+        signing_keystore_google_signing_upgrade
+
+        Google Play Upgrade Signing Key
+
+        Boolean
+
+        Send true if you upgraded your app signing key for new installs.
+
+
+        signing_keystore_google_signing_sha1_key_2nd_cert
+
+        Upgraded Certificate Fingerprint
+
+        String
+
+        Your past key signing certificate fingerprint is required to tamper-proof built applications and allow them to run on legacy and new installs.
+
+
+        trusted_signing_fingerprint_list
+
+        Trusted Signing Fingerprint List
+
+        Array of Objects
+
+        Array of trusted signing certificate fingerprints. Each object contains: SHA (string, SHA-1 or SHA-256 fingerprint), TrustedStoreSigning {optional} (boolean). Android only.
+
+        Must not be used together with signing_keystore_use_google_signing, signing_keystore_google_signing_upgrade, or signing_keystore_google_signing_sha1_key_2nd_cert'
+      summary: Private Sign an App
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - seal
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'example: {"signing_sha1_fingerprint":                                   "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e"} or {"trusted_signing_fingerprint_list":                                   [{"SHA": "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e", "TrustedStoreSigning": true }]}'
+                provisioning_profile:
+                  type: string
+                  format: binary
+                  description: underscore is not accepted in filename
+                entitlements_files:
+                  type: string
+                  format: binary
+                  description: (IOS only) Required if "manual_entitlements_matching" is true, underscore is not accepted in filename
+      operationId: postTasks#privateSign
+      x-operation-id-source: derived
+  /tasks#sign:
+    post:
+      tags:
+      - Tasks
+      description: 'Available overrides for the Signing Task:
+
+
+        IOS:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_p12_password
+
+        P12 Certificate Password
+
+        String
+
+
+        manual_entitlements_matching
+
+        Manual Entitlements Matching
+
+        Boolean
+
+
+        IOS SDK:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_p12_password
+
+        P12 Certificate Password
+
+        String
+
+
+        Android:
+
+
+        Key
+
+        Name in Appdome
+
+        Value
+
+        Notes
+
+
+        signing_keystore_use_google_signing
+
+        Use Google Play App Signing
+
+        Boolean
+
+        Must use with signing_keystore_google_signing_sha1_key
+
+
+        signing_keystore_google_signing_sha1_key
+
+        App Signing Certificate SHA-1 or SHA-256
+
+        String
+
+
+        signing_keystore_password
+
+        Signing Keystore Password
+
+        String
+
+
+        signing_keystore_alias
+
+        Signing Keystore Alias
+
+        String
+
+
+        signing_keystore_key_password
+
+        Signing Key Password
+
+        String
+
+
+        signing_keystore_google_signing_upgrade
+
+        Google Play Upgrade Signing Key
+
+        Boolean
+
+        Send true if you upgraded your app signing key for new installs.
+
+
+        signing_keystore_google_signing_sha1_key_2nd_cert
+
+        Upgraded Certificate Fingerprint
+
+        String
+
+        Your past key signing certificate fingerprint is required to tamper-proof built applications and allow them to run on legacy and new installs.
+
+
+        trusted_signing_fingerprint_list
+
+        Trusted Signing Fingerprint List
+
+        Array of Objects
+
+        Array of trusted signing certificate fingerprints. Each object contains: SHA (string, SHA-1 or SHA-256 fingerprint), TrustedStoreSigning {optional} (boolean). Android only.
+
+        Must not be used together with signing_keystore_use_google_signing, signing_keystore_google_signing_upgrade, or signing_keystore_google_signing_sha1_key_2nd_cert'
+      summary: Sign an App
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: ID of the created fuse task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    example: lix-X4WwvH6joI9DqjdlnQ
+                    description: ID of the created fuse task
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - sign
+                parent_task_id:
+                  type: string
+                overrides:
+                  type: string
+                  description: 'examples:  {"signing_p12_password": "my_password"} or {"trusted_signing_fingerprint_list": [{"SHA": "e5fa44f2b31c1fb553b6021e7360d07d5d91ff5e", "TrustedStoreSigning": true]}'
+                signing_p12_content:
+                  type: string
+                  format: binary
+                  description: (IOS only) underscore is not accepted in filename
+                provisioning_profile:
+                  type: string
+                  format: binary
+                  description: (IOS only) underscore is not accepted in filename
+                entitlements_files:
+                  type: string
+                  format: binary
+                  description: (IOS only) Required if "manual_entitlements_matching" is true, underscore is not accepted in filename
+                signing_keystore:
+                  type: string
+                  format: binary
+                  description: (Android only) underscore is not accepted in filename
+      operationId: postTasks#sign
+      x-operation-id-source: derived
+  /tasks/{parent_task_id}/deploy_script:
+    get:
+      tags:
+      - Tasks
+      description: 'To deploy your app to Apple’s App Store, due to Apple’s requirements, you can download a script that will perform this from your Mac.
+
+        This API allows you to download a script for deploying apps to the App Store.'
+      summary: Get App Store Deploy Script
+      parameters:
+      - description: Personal or team ID
+        example: personal
+        name: team_id
+        in: query
+        schema:
+          type: string
+          default: personal
+        required: true
+      - description: The parent task ID (Appdome Build ID)
+        example: 123e4567-e89b-12d3-a456-426614174000
+        name: parent_task_id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: A bash script for deploying an app to the App Store.
+          content:
+            application/json: {}
+      operationId: getTasksByParentTaskIdDeployScript
+      x-operation-id-source: derived
+  /tasks/{task_id}/appdome-test-result:
+    get:
+      tags:
+      - Tasks
+      description: 'Download the JSON results of a completed Appdome Test (Standard Launch Tests) for a given task ID.
+
+        The results include per-device launch tests (cold start, warm start, resume) and a run summary.'
+      summary: Download Appdome Test Results
+      parameters:
+      - in: query
+        name: team_id
+        required: true
+        description: personal or team id
+        schema:
+          type: string
+          default: personal
+      - description: UUID of the task ID
+        example: 123e4567-e89b-12d3-a456-426614174000
+        name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Appdome Test results (JSON)
+          content:
+            application/json: {}
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      operationId: getTasksByTaskIdAppdomeTestResult
+      x-operation-id-source: derived
+  /tasks/{task_id}/output#buildApp:
+    get:
+      tags:
+      - Tasks
+      description: 'This API allows you to fuse a mobile App/SDK.
+
+        After uploading your App/SDK and obtaining the Application ID, you can initiate the build process using an existing Fusion Set.
+
+        The `fusion_set_id` is required to fuse (Build) the application.
+
+        Once the build is completed, the resulting `task_id`, referred to as the "Appdome Build ID," is necessary for all subsequent task actions and is used as `parent_task_id`.
+
+        This endpoint supports several overrides for customizing the build task, as detailed below.
+
+        You can download an AAB file in a universal APK format. To do so, add the parameter action=sign_second_output.'
+      summary: Download Appdome-Built App/SDK
+      parameters:
+      - in: path
+        name: task_id
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: action
+        required: false
+        schema:
+          type: string
+          enum:
+          - sign_second_output
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The downloaded App/SDK.
+          content:
+            application/json: {}
+      operationId: getTasksByTaskIdOutput#buildApp
+      x-operation-id-source: derived
+  /tasks/{task_id}/output#obfuscationMapping:
+    get:
+      tags:
+      - Tasks
+      description: Once your App/SDK is built with obfuscation, you can download your obfuscation mapping file using the Download GET request. The Task ID is sent in the URL.
+      summary: Download Obfuscation Mapping Files
+      parameters:
+      - in: query
+        name: action
+        required: true
+        schema:
+          type: string
+          enum:
+          - deobfuscation_script
+      - in: path
+        name: task_id
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Obfuscation mapping files
+          content:
+            application/json: {}
+      operationId: getTasksByTaskIdOutput#obfuscationMapping
+      x-operation-id-source: derived
+  /tasks/{task_id}/status:
+    get:
+      tags:
+      - Tasks
+      description: 'Get status of a specific task
+
+        This API Allows you to get the status of a task by ID.'
+      summary: Get Task Status
+      parameters:
+      - in: query
+        name: team_id
+        required: true
+        description: personal or team id
+        schema:
+          type: string
+          default: personal
+      - in: query
+        name: lastDate
+        required: false
+        description: ISO formatted date string
+        schema:
+          type: string
+      - in: query
+        name: messages
+        required: false
+        description: Get task progress messages
+        schema:
+          type: boolean
+          default: 'false'
+      - description: UUID of task id
+        name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: status of the task
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                properties:
+                  messages:
+                    type: array
+                    description: array of messages
+                    items:
+                      type: object
+                      example:
+                        id: f7e71910-89bb-12ec-917f-1b9d901c5836
+                        message:
+                          sdk: BASE
+                          text: I am creating the right sealing profile for your app, no worries.
+                          context:
+                          - SEAL
+                          priority: HIGH
+                          structure: text
+                          action_type: feature
+                        message_type: AMI
+                        creation_time: '2022-02-09T15:21:35.265Z'
+                  status:
+                    type: string
+                    description: status of the task
+                    enum:
+                    - progress
+                    - completed
+                    - error
+                    example: completed
+                  obfuscationMapExists:
+                    type: boolean
+                    description: indication if obfuscation map file exists - will be added only if set to true
+                    example: true
+                  certificatesWarnings:
+                    type: array
+                    description: array of certificate-related warnings
+                    items:
+                      type: string
+                      example: The certificate file - myCert.pem, has expired. Please supply an updated certificate to protect your app
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      operationId: getTasksByTaskIdStatus
+      x-operation-id-source: derived
+  /upload:
+    post:
+      tags:
+      - Tasks
+      description: Upload an App/SDK directly to Appdome.
+      summary: Upload an App/SDK Directly to Appdome
+      parameters: []
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: the App/SDK data
+          content:
+            application/json:
+              schema:
+                type: object
+      deprecated: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: underscore is not accepted in filename
+      operationId: postUpload
+      x-operation-id-source: derived
+  /upload-link:
+    get:
+      tags:
+      - Tasks
+      description: 'This endpoint generates a unique, time-limited URL for Amazon Web Services (AWS) to upload an app or SDK securely.
+
+        It provides both the URL and a file ID necessary for the upload
+
+        After receiving the URL, send a PUT request with the app or SDK you wish to upload in the request body.
+
+        The URL expires after 30 minutes to maintain security.
+
+
+        Steps to Use this Endpoint:
+
+
+        1. Obtain Your API Key:
+
+
+        To authenticate API requests, you will need an API key, which can be obtained from your Appdome account. Follow these steps:
+
+
+        Log in to your Appdome account.
+
+
+        Navigate to the ''User Menu'' or ''API'' section.
+
+
+        Look for an option labeled ''Account and API.''
+
+
+        Copy your Appdome’s Build2Secure API Token.
+
+
+        2. Make the GET Request:
+
+
+        Use the API key to authenticate your request by including it in the Authorization header as a bearer token.
+
+
+        3. Handle the Response:
+
+
+        Upon a successful request, you will receive a JSON response containing the public link, the file ID, and the time until the link expires.'
+      summary: Get AWS Upload Link
+      parameters:
+      - in: query
+        name: team_id
+        required: true
+        description: personal or team id
+        schema:
+          type: string
+          default: personal
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: s3 signed url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: https://fusion-applications.s3.us-west-1.amazonaws.com/3328a9b1/d968b4/d55e4b304b0b470968b4_input?AWSAccessKeyId=AKIAJVYXHJTA&Expires=16312&Signature=enXqXZKtG8qAng8=
+                  file_id:
+                    type: string
+                    example: d55e4b30-123123123
+                  expire_time_in_min:
+                    type: number
+                    example: 30
+      operationId: getUploadLink
+      x-operation-id-source: derived
+  /upload-using-link:
+    post:
+      tags:
+      - Tasks
+      description: It allows you to upload the App/SDK from the AWS server into Appdome.
+      summary: After Uploading to AWS
+      parameters:
+      - in: query
+        name: team_id
+        required: true
+        description: personal or team id
+        schema:
+          type: string
+          default: personal
+      - name: type
+        in: query
+        schema:
+          type: string
+          default: original
+          enum:
+          - original
+          - support
+      - name: async
+        in: query
+        schema:
+          type: boolean
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The App/SDK data
+          content:
+            application/json:
+              schema:
+                type: object
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file_app_id:
+                  type: string
+                file_name:
+                  type: string
+      operationId: postUploadUsingLink
+      x-operation-id-source: derived
+  /upload/{app_id}/status:
+    get:
+      tags:
+      - Tasks
+      description: 'Returns the status of the upload.
+
+        The status can be one of the following:
+
+        1. queued – the upload is waiting to be processed.
+
+        1. progress – the upload is still in progress.
+
+        2. completed – the upload was completed successfully.
+
+        3. error – the upload failed.
+
+        In case of error, the response will include an error message under `error` key.'
+      summary: Get Upload Status
+      parameters:
+      - in: query
+        name: team_id
+        required: true
+        description: personal or team id
+        schema:
+          type: string
+          default: personal
+      - description: UUID of an app
+        name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: State of upload task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: f7e71910-89bb-12ec-917f-1b9d901c5836
+                    description: app id
+                  status:
+                    type: string
+                    example: QUEUED
+                    description: upload status
+                  error:
+                    type: string
+                    example: Upload failed
+                    description: error message
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      operationId: getUploadByAppIdStatus
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+x-provenance:
+  method: searched
+  source: https://apis.appdome.com/reference
+  harvested: '2026-10-14'
+  tool: harvest-readme-openapi.py
+  note: Assembled verbatim from the OpenAPI definition ReadMe embeds in each operation page of the provider's developer portal; paths and components merged by API title, nothing authored.
+  assembled_from:
+  - https://apis.appdome.com/reference/delete_my-library-apps.md
+  - https://apis.appdome.com/reference/delete_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/delete_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_events.md
+  - https://apis.appdome.com/reference/get_fusion-set-compare.md
+  - https://apis.appdome.com/reference/get_fusion-set-fusionsetid-export-json.md
+  - https://apis.appdome.com/reference/get_fusion-set-history.md
+  - https://apis.appdome.com/reference/get_my-library-apps.md
+  - https://apis.appdome.com/reference/get_mycompany-events.md
+  - https://apis.appdome.com/reference/get_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/get_mycompany-teams.md
+  - https://apis.appdome.com/reference/get_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_mycompany-users.md
+  - https://apis.appdome.com/reference/get_sessions-limit.md
+  - https://apis.appdome.com/reference/get_tasks-parent-task-id-deploy-script.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-appdome-test-result.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate-json.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-buildapp.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-obfuscationmapping.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-status.md
+  - https://apis.appdome.com/reference/get_upload-app-id-status.md
+  - https://apis.appdome.com/reference/get_upload-link.md
+  - https://apis.appdome.com/reference/get_validation-appid-status.md
+  - https://apis.appdome.com/reference/post_build-to-test-autodev.md
+  - https://apis.appdome.com/reference/post_build-to-test-build.md
+  - https://apis.appdome.com/reference/post_build-to-test-context.md
+  - https://apis.appdome.com/reference/post_build-to-test-privatesign.md
+  - https://apis.appdome.com/reference/post_build-to-test-sign.md
+  - https://apis.appdome.com/reference/post_mycompany-teams.md
+  - https://apis.appdome.com/reference/post_mycompany-users-userid-refreshtoken.md
+  - https://apis.appdome.com/reference/post_mycompany-users.md
+  - https://apis.appdome.com/reference/post_pwappload.md
+  - https://apis.appdome.com/reference/post_refreshapitoken.md
+  - https://apis.appdome.com/reference/post_release-fs-fs-id.md
+  - https://apis.appdome.com/reference/post_tasks-appdometest.md
+  - https://apis.appdome.com/reference/post_tasks-autodev.md
+  - https://apis.appdome.com/reference/post_tasks-build.md
+  - https://apis.appdome.com/reference/post_tasks-context.md
+  - https://apis.appdome.com/reference/post_tasks-privatesign.md
+  - https://apis.appdome.com/reference/post_tasks-sign.md
+  - https://apis.appdome.com/reference/post_upload-using-link.md
+  - https://apis.appdome.com/reference/post_upload.md
+  - https://apis.appdome.com/reference/post_validation-upload.md
+  - https://apis.appdome.com/reference/post_verify-certificate.md
+  - https://apis.appdome.com/reference/put_amazon-upload-link.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-removeuserfromteam.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-updateuserentitlements.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid-blockuser.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid.md
+  merge:
+    pages: 51
+    deduped: 50
+    conflicts_kept_first: 0

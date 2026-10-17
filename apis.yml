@@ -166,9 +166,11 @@ common:
 
 apis:
 - name: Appdome Build2Secure API
-  description: The Appdome Build2Secure (DEV-API) REST API automates Appdome's no-code mobile app defense pipeline — upload, build/fuse, add context,
-    sign (standard, private, and Auto-DEV signing), download, publish to OTA, validate, generate Certified Secure certificates, manage company
-    teams and users, and read DEV-Logs audit events. Tasks are asynchronous and tracked by task_id.
+  description: >-
+    The Appdome Build2Secure (DEV-API) REST API automates Appdome's no-code mobile app defense pipeline
+    — upload, build/fuse, add context, sign (standard, private, and Auto-DEV signing), download, publish
+    to OTA, validate, generate Certified Secure certificates, manage company teams and users, and read
+    DEV-Logs audit events. Tasks are asynchronous and tracked by task_id.
   humanURL: https://apis.appdome.com/docs/introduction
   baseURL: https://fusion.appdome.com/api/v1
   tags:
@@ -197,32 +199,25 @@ apis:
     url: data-model/appdome-data-model.yml
   - type: X-MCPServerCandidate
     url: mcp/appdome-mcp.yml
-    note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published
-      API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting
-      the artifact-type surfaces with a server that does not exist.'
+    note: >-
+      Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate
+      — a tool list derived from the published API contracts, not an existing server. The scorer already
+      read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type
+      surfaces with a server that does not exist.
   - type: Conformance
     url: conformance/appdome-conformance.yml
   aid: appdome:appdome-build2secure-api
-- aid: appdome:appdome-api
-  name: Appdome Appdome API
-  description: The Appdome API from Appdome — 44 operation(s) for appdome.
+- aid: appdome:appdome-api-account-maintenance-api
+  name: Appdome API Account Maintenance API
+  description: >-
+    The API Account Maintenance API from Appdome — 8 operation(s) for api account maintenance.
   humanURL: https://apis.appdome.com/docs/introduction
   baseURL: https://fusion.appdome.com/api/v1
   tags:
-  - Appdome
+  - API Account Maintenance
   properties:
   - type: OpenAPI
-    url: openapi/appdome-api-openapi.yml
-- aid: appdome:appdome-mobile-risk-api
-  name: Appdome Mobile Risk API
-  description: The Mobile Risk API from Appdome — 2 operation(s) for mobile risk.
-  humanURL: https://apis.appdome.com/docs/introduction
-  baseURL: https://fusion.appdome.com/api/v1
-  tags:
-  - Mobile Risk
-  properties:
-  - type: OpenAPI
-    url: openapi/appdome-mobile-risk-api-openapi.yml
+    url: openapi/appdome-api-account-maintenance-api-openapi.yml
   - type: JSONSchema
     url: json-schema/appdome-discover-request-schema.json
   - type: JSONSchema
@@ -231,7 +226,114 @@ apis:
     url: json-schema/appdome-compare-request-schema.json
   - type: JSONSchema
     url: json-schema/appdome-discover-result-schema.json
-
+- aid: appdome:appdome-api-team-management-api
+  name: Appdome API Team Management API
+  description: The API Team Management API from Appdome — 4 operation(s) for api team management.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - API Team Management
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-api-team-management-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/appdome-discover-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-response-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-discover-result-schema.json
+- aid: appdome:appdome-api-user-management-api
+  name: Appdome API User Management API
+  description: The API User Management API from Appdome — 5 operation(s) for api user management.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - API User Management
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-api-user-management-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/appdome-discover-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-response-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-discover-result-schema.json
+- aid: appdome:appdome-app-validation-api
+  name: Appdome App Validation API
+  description: The App Validation API from Appdome — 2 operation(s) for app validation.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - App Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-app-validation-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/appdome-discover-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-response-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-discover-result-schema.json
+- aid: appdome:appdome-device-match-api
+  name: Appdome Device Match API
+  description: The Device Match API from Appdome — 2 operation(s) for device match.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - Device Match
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-device-match-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/appdome-discover-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-response-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-discover-result-schema.json
+- aid: appdome:appdome-secure-certificate-api
+  name: Appdome Secure Certificate API
+  description: The Secure Certificate API from Appdome — 3 operation(s) for secure certificate.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - Secure Certificate
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-secure-certificate-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/appdome-discover-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-response-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-discover-result-schema.json
+- aid: appdome:appdome-tasks-api
+  name: Appdome Tasks API
+  description: The Tasks API from Appdome — 22 operation(s) for tasks.
+  humanURL: https://apis.appdome.com/docs/introduction
+  baseURL: https://fusion.appdome.com/api/v1
+  tags:
+  - Tasks
+  properties:
+  - type: OpenAPI
+    url: openapi/appdome-tasks-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/appdome-discover-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-response-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-compare-request-schema.json
+  - type: JSONSchema
+    url: json-schema/appdome-discover-result-schema.json
 x-enrichment:
   date: '2026-07-19'
   status: backfilled

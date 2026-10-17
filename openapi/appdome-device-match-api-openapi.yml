@@ -1,9 +1,11 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   version: 1.0.0
-  title: Mobile Risk API
+  title: Mobile Risk Device Match API
 servers:
 - url: https://mobilerisk.appdome.com
+tags:
+- name: Device Match
 paths:
   /v1/devicematch/compare:
     post:
@@ -59,6 +61,8 @@ paths:
                     detail: 'Failed to parse query_device_id ''<Device_id_A>''. The device ID format is invalid or uses an unknown schema. Error: Invalid device ID format: part ''<Device_id_A>'' contains invalid hex characters. Device ID parts must contain only valid hexadecimal characters (0-9, a-f).'
       security:
       - bearerAuth: []
+      operationId: postV1DevicematchCompare
+      x-operation-id-source: derived
   /v1/devicematch/discover:
     post:
       tags:
@@ -113,39 +117,10 @@ paths:
                 similarity: 0.633
       security:
       - bearerAuth: []
+      operationId: postV1DevicematchDiscover
+      x-operation-id-source: derived
 components:
   schemas:
-    CompareRequest:
-      type: object
-      required:
-      - query_device_id
-      - candidate_device_id
-      properties:
-        query_device_id:
-          type: string
-          description: The device ID to compare
-        candidate_device_id:
-          type: string
-          description: The device ID to compare with
-    CompareResponse:
-      type: object
-      properties:
-        query_device_id:
-          type: string
-          description: The query device ID
-        candidate_device_id:
-          type: string
-          description: The candidate device ID
-        similarity:
-          type: number
-          format: double
-          description: Similarity score between 0 and 1
-    ErrorResponse:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Error message describing the issue
     DiscoverRequest:
       type: object
       required:
@@ -173,6 +148,25 @@ components:
           minimum: 1
           maximum: 100
           default: 10
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message describing the issue
+    CompareResponse:
+      type: object
+      properties:
+        query_device_id:
+          type: string
+          description: The query device ID
+        candidate_device_id:
+          type: string
+          description: The candidate device ID
+        similarity:
+          type: number
+          format: double
+          description: Similarity score between 0 and 1
     DiscoverResult:
       type: object
       properties:
@@ -183,6 +177,18 @@ components:
           type: number
           format: double
           description: Similarity score between 0 and 1
+    CompareRequest:
+      type: object
+      required:
+      - query_device_id
+      - candidate_device_id
+      properties:
+        query_device_id:
+          type: string
+          description: The device ID to compare
+        candidate_device_id:
+          type: string
+          description: The device ID to compare with
   securitySchemes:
     bearerAuth:
       type: http

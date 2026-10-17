@@ -1,0 +1,185 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: Appdome App Validation API
+servers:
+- url: https://fusion.appdome.com/api/v1
+  description: Main Appdome API Server
+- url: '{aws_upload_link}'
+  description: S3 Upload URL
+  variables:
+    aws_upload_link:
+      default: ''
+      description: The S3 bucket name from the pre-signed URL. Obtained from 'Get AWS Upload Link' route.
+tags:
+- name: App Validation
+paths:
+  /validation/upload:
+    post:
+      tags:
+      - App Validation
+      description: Upload an application to validate its integrity.
+      summary: Validation Upload
+      parameters: []
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Validation Upload
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Id of app validation task
+                properties:
+                  id:
+                    type: string
+                    example: f7e71910-89bb-12ec-917f-1b9d901c5836
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: underscore is not accepted in filename
+      operationId: postValidationUpload
+      x-operation-id-source: derived
+  /validation/{appId}/status:
+    get:
+      tags:
+      - App Validation
+      description: Get App Validation Status
+      summary: Validation Status
+      parameters:
+      - name: appId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Validation Upload
+          content:
+            application/json:
+              schema:
+                type: object
+                description: State of app validation task, including messages and errors.
+                properties:
+                  validation_state:
+                    type: string
+                    example: failed | completed
+                  messages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: The app is correctly by owner
+                  error:
+                    type: string
+                  build_id:
+                    type: string
+                    example: f7e71910-89bb-12ec-917f-1b9d901c5836
+                  app_type:
+                    type: string
+                    example: apk
+                  app_name:
+                    type: string
+                    example: App name
+                  app_pack_id:
+                    type: string
+                    example: com.app.name
+                  app_version:
+                    type: string
+                    example: 1.0.0
+                  app_build_number:
+                    type: string
+                    example: '10001'
+                  app_id:
+                    type: string
+                    example: f7e71910-89bb-12ec-917f-1b9d901c5836
+        '429':
+          description: user rate limit has exceed..
+          content:
+            application/json: {}
+      operationId: getValidationByAppIdStatus
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+x-provenance:
+  method: searched
+  source: https://apis.appdome.com/reference
+  harvested: '2026-10-14'
+  tool: harvest-readme-openapi.py
+  note: Assembled verbatim from the OpenAPI definition ReadMe embeds in each operation page of the provider's developer portal; paths and components merged by API title, nothing authored.
+  assembled_from:
+  - https://apis.appdome.com/reference/delete_my-library-apps.md
+  - https://apis.appdome.com/reference/delete_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/delete_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_events.md
+  - https://apis.appdome.com/reference/get_fusion-set-compare.md
+  - https://apis.appdome.com/reference/get_fusion-set-fusionsetid-export-json.md
+  - https://apis.appdome.com/reference/get_fusion-set-history.md
+  - https://apis.appdome.com/reference/get_my-library-apps.md
+  - https://apis.appdome.com/reference/get_mycompany-events.md
+  - https://apis.appdome.com/reference/get_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/get_mycompany-teams.md
+  - https://apis.appdome.com/reference/get_mycompany-users-userid.md
+  - https://apis.appdome.com/reference/get_mycompany-users.md
+  - https://apis.appdome.com/reference/get_sessions-limit.md
+  - https://apis.appdome.com/reference/get_tasks-parent-task-id-deploy-script.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-appdome-test-result.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate-json.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-certificate.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-buildapp.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-output-obfuscationmapping.md
+  - https://apis.appdome.com/reference/get_tasks-task-id-status.md
+  - https://apis.appdome.com/reference/get_upload-app-id-status.md
+  - https://apis.appdome.com/reference/get_upload-link.md
+  - https://apis.appdome.com/reference/get_validation-appid-status.md
+  - https://apis.appdome.com/reference/post_build-to-test-autodev.md
+  - https://apis.appdome.com/reference/post_build-to-test-build.md
+  - https://apis.appdome.com/reference/post_build-to-test-context.md
+  - https://apis.appdome.com/reference/post_build-to-test-privatesign.md
+  - https://apis.appdome.com/reference/post_build-to-test-sign.md
+  - https://apis.appdome.com/reference/post_mycompany-teams.md
+  - https://apis.appdome.com/reference/post_mycompany-users-userid-refreshtoken.md
+  - https://apis.appdome.com/reference/post_mycompany-users.md
+  - https://apis.appdome.com/reference/post_pwappload.md
+  - https://apis.appdome.com/reference/post_refreshapitoken.md
+  - https://apis.appdome.com/reference/post_release-fs-fs-id.md
+  - https://apis.appdome.com/reference/post_tasks-appdometest.md
+  - https://apis.appdome.com/reference/post_tasks-autodev.md
+  - https://apis.appdome.com/reference/post_tasks-build.md
+  - https://apis.appdome.com/reference/post_tasks-context.md
+  - https://apis.appdome.com/reference/post_tasks-privatesign.md
+  - https://apis.appdome.com/reference/post_tasks-sign.md
+  - https://apis.appdome.com/reference/post_upload-using-link.md
+  - https://apis.appdome.com/reference/post_upload.md
+  - https://apis.appdome.com/reference/post_validation-upload.md
+  - https://apis.appdome.com/reference/post_verify-certificate.md
+  - https://apis.appdome.com/reference/put_amazon-upload-link.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-removeuserfromteam.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-updateuserentitlements.md
+  - https://apis.appdome.com/reference/put_mycompany-teams-teamid.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid-blockuser.md
+  - https://apis.appdome.com/reference/put_mycompany-users-userid.md
+  merge:
+    pages: 51
+    deduped: 50
+    conflicts_kept_first: 0
