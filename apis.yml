@@ -322,6 +322,8 @@ apis:
   humanURL: https://apis.appdome.com/docs/introduction
   baseURL: https://fusion.appdome.com/api/v1
   tags:
+  - Task
+  tags_raw:
   - Tasks
   properties:
   - type: OpenAPI
