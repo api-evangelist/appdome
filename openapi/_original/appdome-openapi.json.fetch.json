@@ -1,0 +1,12 @@
+{
+ "url": "https://fusion.appdome.com/swagger.json",
+ "final": "https://fusion.appdome.com/swagger.json",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 112918,
+ "sha256": "646709b64e8c428759dd76dbbccab2f12026e6b60d259863535bbae359c1cedc",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

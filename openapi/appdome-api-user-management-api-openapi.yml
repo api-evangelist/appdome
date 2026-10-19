@@ -14,89 +14,61 @@ servers:
 tags:
 - name: API User Management
 paths:
-  /myCompany/events:
-    get:
+  /myCompany/users/{userId}/blockUser:
+    put:
       tags:
       - API User Management
-      description: 'REST API for retreiving loginlogout within your company.
-
-        The codes are 3000 (User Login), 3001 (Azure Login), 3004 (Okta Login), 3005 (Ping Login), 3006 (Passkey Login), 3010 (User Login Failed), 3073 (User Signed Out Manually)'
-      summary: Login and Logout Events Company Users API
+      description: Allows you to change an existing company user account status to blocked.
+      summary: Block a Company User API
       parameters:
-      - in: query
-        name: start_date
-        description: mm/dd/yyyy start_date cannot be earlier than 3 months ago
-        schema:
-          type: string
-      - in: query
-        name: end_date
-        description: mm/dd/yyyy end_date should be after start_date
-        schema:
-          type: string
-      - in: query
-        name: page
-        description: The current page from the results - start from 0
-        schema:
-          type: string
-      - in: query
-        name: per_page
-        description: Number of results for page - default 30
+      - name: userId
+        in: path
+        required: true
         schema:
           type: string
       security:
       - apiKey: []
       responses:
         '200':
-          description: The requested company audit logs
+          description: The requested user data
           content:
             application/json:
               schema:
-                type: array
-                description: array of logs
-                items:
-                  type: object
-                  properties:
-                    timestamp:
-                      type: string
-                      example: '2022-10-19T16:23:31.202Z'
-                    code:
-                      type: string
-                      example: '3001'
-                    message:
-                      type: string
-                      example: john@doe.com signed in successfully with office 365
-                    id:
-                      type: string
-                      example: 5edf1620-4fca-11ed-98f2-3d22aa67eaf2
-                    data:
-                      type: object
-                      example:
-                        account_id: 0a57d651-0260-11f0-9f95-4b99db8f8b32
-                        username: john@doe.com
-                        user_id: 0a57d650-0260-11f0-9f95-4b99db8f8b32
-                        browser_info:
-                          origin: https://www.google.com
-                          userAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
-                          referrer: https://www.google.com
-                          user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
-                          accept-encoding: gzip, deflate, br, zsts
-                          accept-language: en-US,en:q=0.5
-                example:
-                - timestamp: '2022-10-19T16:26:31.202Z'
-                  code: '3001'
-                  message: john@doe.com signed in successfully with office 365
-                  id: 5edf1620-4fca-11ed-98f2-3d22aa12abf2
-                  data:
-                    user_username: john@doe.com
-                    user_id: 0a7fa790-fadc-11ec-8654-3113024f3356
-                    account_id: 0a7fa790-fadc-11ec-8654-3113024f3356
-                    browser_info:
-                      user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36
-                      referer: https://fusion.appdome.com/
-                      accept-encoding: gzip, deflate, br, zstd
-                      accept-language: US
-                    client_ip: 0.0.0.0
-      operationId: getMyCompanyEvents
+                type: object
+                properties:
+                  first_name:
+                    type: string
+                    description: The user first name
+                    example: John
+                  last_name:
+                    type: string
+                    description: The user last name
+                    example: Doe
+                  name:
+                    type: string
+                    description: The user display name
+                    example: John Doe
+                  email:
+                    type: string
+                    description: The user email address
+                    example: john@doe.com
+                  status:
+                    type: string
+                    description: The user account status - Active or Blocked
+                    example: Blocked
+                  last_activity:
+                    type: string
+                    description: The date and time of the user last activity on the Appdome Date and time
+                    example: 18/09/2022
+                  api_token_enabled:
+                    type: string
+                    description: 1 if the user have active API access to REST API, 0 if not.
+                    example: '0'
+                  api_token_permissions:
+                    type: string
+                    description: '["write", "read"]// Permissions to Appdome''s Management API'
+                    example: '[]'
+      operationId: putMyCompanyUsersByUserIdBlockUser
       x-operation-id-source: derived
   /myCompany/users:
     post:
@@ -229,6 +201,37 @@ paths:
       operationId: getMyCompanyUsers
       x-operation-id-source: derived
   /myCompany/users/{userId}:
+    delete:
+      tags:
+      - API User Management
+      description: Allows you to delete a company user. This action cannot be undone.
+      summary: Delete a Company User API
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    description: HTTP status code
+                    example: 200
+        '404':
+          description: User not found
+          content:
+            application/json: {}
+      operationId: deleteMyCompanyUsersByUserId
+      x-operation-id-source: derived
     get:
       tags:
       - API User Management
@@ -367,92 +370,89 @@ paths:
                       - write
       operationId: putMyCompanyUsersByUserId
       x-operation-id-source: derived
-    delete:
+  /myCompany/events:
+    get:
       tags:
       - API User Management
-      description: Allows you to delete a company user. This action cannot be undone.
-      summary: Delete a Company User API
+      description: 'REST API for retreiving loginlogout within your company.
+
+        The codes are 3000 (User Login), 3001 (Azure Login), 3004 (Okta Login), 3005 (Ping Login), 3006 (Passkey Login), 3010 (User Login Failed), 3073 (User Signed Out Manually)'
+      summary: Login and Logout Events Company Users API
       parameters:
-      - name: userId
-        in: path
-        required: true
+      - in: query
+        name: start_date
+        description: mm/dd/yyyy start_date cannot be earlier than 3 months ago
+        schema:
+          type: string
+      - in: query
+        name: end_date
+        description: mm/dd/yyyy end_date should be after start_date
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: The current page from the results - start from 0
+        schema:
+          type: string
+      - in: query
+        name: per_page
+        description: Number of results for page - default 30
         schema:
           type: string
       security:
       - apiKey: []
       responses:
         '200':
-          description: User successfully deleted
+          description: The requested company audit logs
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: number
-                    description: HTTP status code
-                    example: 200
-        '404':
-          description: User not found
-          content:
-            application/json: {}
-      operationId: deleteMyCompanyUsersByUserId
-      x-operation-id-source: derived
-  /myCompany/users/{userId}/blockUser:
-    put:
-      tags:
-      - API User Management
-      description: Allows you to change an existing company user account status to blocked.
-      summary: Block a Company User API
-      parameters:
-      - name: userId
-        in: path
-        required: true
-        schema:
-          type: string
-      security:
-      - apiKey: []
-      responses:
-        '200':
-          description: The requested user data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  first_name:
-                    type: string
-                    description: The user first name
-                    example: John
-                  last_name:
-                    type: string
-                    description: The user last name
-                    example: Doe
-                  name:
-                    type: string
-                    description: The user display name
-                    example: John Doe
-                  email:
-                    type: string
-                    description: The user email address
-                    example: john@doe.com
-                  status:
-                    type: string
-                    description: The user account status - Active or Blocked
-                    example: Blocked
-                  last_activity:
-                    type: string
-                    description: The date and time of the user last activity on the Appdome Date and time
-                    example: 18/09/2022
-                  api_token_enabled:
-                    type: string
-                    description: 1 if the user have active API access to REST API, 0 if not.
-                    example: '0'
-                  api_token_permissions:
-                    type: string
-                    description: '["write", "read"]// Permissions to Appdome''s Management API'
-                    example: '[]'
-      operationId: putMyCompanyUsersByUserIdBlockUser
+                type: array
+                description: array of logs
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                      example: '2022-10-19T16:23:31.202Z'
+                    code:
+                      type: string
+                      example: '3001'
+                    message:
+                      type: string
+                      example: john@doe.com signed in successfully with office 365
+                    id:
+                      type: string
+                      example: 5edf1620-4fca-11ed-98f2-3d22aa67eaf2
+                    data:
+                      type: object
+                      example:
+                        account_id: 0a57d651-0260-11f0-9f95-4b99db8f8b32
+                        username: john@doe.com
+                        user_id: 0a57d650-0260-11f0-9f95-4b99db8f8b32
+                        browser_info:
+                          origin: https://www.google.com
+                          userAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
+                          referrer: https://www.google.com
+                          user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
+                          accept-encoding: gzip, deflate, br, zsts
+                          accept-language: en-US,en:q=0.5
+                example:
+                - timestamp: '2022-10-19T16:26:31.202Z'
+                  code: '3001'
+                  message: john@doe.com signed in successfully with office 365
+                  id: 5edf1620-4fca-11ed-98f2-3d22aa12abf2
+                  data:
+                    user_username: john@doe.com
+                    user_id: 0a7fa790-fadc-11ec-8654-3113024f3356
+                    account_id: 0a7fa790-fadc-11ec-8654-3113024f3356
+                    browser_info:
+                      user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36
+                      referer: https://fusion.appdome.com/
+                      accept-encoding: gzip, deflate, br, zstd
+                      accept-language: US
+                    client_ip: 0.0.0.0
+      operationId: getMyCompanyEvents
       x-operation-id-source: derived
   /myCompany/users/{userId}/refreshToken:
     post:
@@ -488,65 +488,3 @@ components:
       type: apiKey
       in: header
       name: Authorization
-x-provenance:
-  method: searched
-  source: https://apis.appdome.com/reference
-  harvested: '2026-10-14'
-  tool: harvest-readme-openapi.py
-  note: Assembled verbatim from the OpenAPI definition ReadMe embeds in each operation page of the provider's developer portal; paths and components merged by API title, nothing authored.
-  assembled_from:
-  - https://apis.appdome.com/reference/delete_my-library-apps.md
-  - https://apis.appdome.com/reference/delete_mycompany-teams-teamid.md
-  - https://apis.appdome.com/reference/delete_mycompany-users-userid.md
-  - https://apis.appdome.com/reference/get_events.md
-  - https://apis.appdome.com/reference/get_fusion-set-compare.md
-  - https://apis.appdome.com/reference/get_fusion-set-fusionsetid-export-json.md
-  - https://apis.appdome.com/reference/get_fusion-set-history.md
-  - https://apis.appdome.com/reference/get_my-library-apps.md
-  - https://apis.appdome.com/reference/get_mycompany-events.md
-  - https://apis.appdome.com/reference/get_mycompany-teams-teamid.md
-  - https://apis.appdome.com/reference/get_mycompany-teams.md
-  - https://apis.appdome.com/reference/get_mycompany-users-userid.md
-  - https://apis.appdome.com/reference/get_mycompany-users.md
-  - https://apis.appdome.com/reference/get_sessions-limit.md
-  - https://apis.appdome.com/reference/get_tasks-parent-task-id-deploy-script.md
-  - https://apis.appdome.com/reference/get_tasks-task-id-appdome-test-result.md
-  - https://apis.appdome.com/reference/get_tasks-task-id-certificate-json.md
-  - https://apis.appdome.com/reference/get_tasks-task-id-certificate.md
-  - https://apis.appdome.com/reference/get_tasks-task-id-output-buildapp.md
-  - https://apis.appdome.com/reference/get_tasks-task-id-output-obfuscationmapping.md
-  - https://apis.appdome.com/reference/get_tasks-task-id-status.md
-  - https://apis.appdome.com/reference/get_upload-app-id-status.md
-  - https://apis.appdome.com/reference/get_upload-link.md
-  - https://apis.appdome.com/reference/get_validation-appid-status.md
-  - https://apis.appdome.com/reference/post_build-to-test-autodev.md
-  - https://apis.appdome.com/reference/post_build-to-test-build.md
-  - https://apis.appdome.com/reference/post_build-to-test-context.md
-  - https://apis.appdome.com/reference/post_build-to-test-privatesign.md
-  - https://apis.appdome.com/reference/post_build-to-test-sign.md
-  - https://apis.appdome.com/reference/post_mycompany-teams.md
-  - https://apis.appdome.com/reference/post_mycompany-users-userid-refreshtoken.md
-  - https://apis.appdome.com/reference/post_mycompany-users.md
-  - https://apis.appdome.com/reference/post_pwappload.md
-  - https://apis.appdome.com/reference/post_refreshapitoken.md
-  - https://apis.appdome.com/reference/post_release-fs-fs-id.md
-  - https://apis.appdome.com/reference/post_tasks-appdometest.md
-  - https://apis.appdome.com/reference/post_tasks-autodev.md
-  - https://apis.appdome.com/reference/post_tasks-build.md
-  - https://apis.appdome.com/reference/post_tasks-context.md
-  - https://apis.appdome.com/reference/post_tasks-privatesign.md
-  - https://apis.appdome.com/reference/post_tasks-sign.md
-  - https://apis.appdome.com/reference/post_upload-using-link.md
-  - https://apis.appdome.com/reference/post_upload.md
-  - https://apis.appdome.com/reference/post_validation-upload.md
-  - https://apis.appdome.com/reference/post_verify-certificate.md
-  - https://apis.appdome.com/reference/put_amazon-upload-link.md
-  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-removeuserfromteam.md
-  - https://apis.appdome.com/reference/put_mycompany-teams-teamid-updateuserentitlements.md
-  - https://apis.appdome.com/reference/put_mycompany-teams-teamid.md
-  - https://apis.appdome.com/reference/put_mycompany-users-userid-blockuser.md
-  - https://apis.appdome.com/reference/put_mycompany-users-userid.md
-  merge:
-    pages: 51
-    deduped: 50
-    conflicts_kept_first: 0

@@ -1,8 +1,9 @@
 {
   "provider": "appdome",
   "sources": [
-    "appdome-api-openapi.yml",
-    "appdome-mobile-risk-api-openapi.yml"
+    "_original/appdome-openapi.json",
+    "appdome-device-match-api-openapi.yml",
+    "appdome-tasks-api-openapi.yml"
   ],
   "outputs": [
     "appdome-api-account-maintenance-api-openapi.yml",
@@ -13,27 +14,29 @@
     "appdome-tasks-api-openapi.yml",
     "appdome-device-match-api-openapi.yml"
   ],
-  "archived": [
-    "deleted 2 superseded output(s) from the previous generation"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [
-    "appdome-api-openapi.yml: previously refined output kept for 51 operation(s) no archived document covers (e.g. /Amazon upload link> put, /build-to-test#autoDev post, /build-to-test#build post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
-    "appdome-mobile-risk-api-openapi.yml: previously refined output kept for 2 operation(s) no archived document covers (e.g. /v1/devicematch/compare post, /v1/devicematch/discover post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth."
+    "appdome-device-match-api-openapi.yml: previously refined output kept for 2 operation(s) no archived document covers (e.g. /v1/devicematch/compare post, /v1/devicematch/discover post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "appdome-tasks-api-openapi.yml: previously refined output kept for 1 operation(s) no archived document covers (e.g. /Amazon upload link> put); its other 21 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth."
   ],
   "notes": [
-    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "appdome-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "appdome-api-openapi.yml: declared missing tag: API Account Maintenance",
-    "appdome-api-openapi.yml: declared missing tag: API Team Management",
-    "appdome-api-openapi.yml: declared missing tag: API User Management",
-    "appdome-api-openapi.yml: declared missing tag: App Validation",
-    "appdome-api-openapi.yml: declared missing tag: Secure Certificate",
-    "appdome-api-openapi.yml: declared missing tag: Tasks",
-    "appdome-mobile-risk-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "appdome-mobile-risk-api-openapi.yml: declared missing tag: Device Match",
-    "superseded outputs removed: appdome-api-openapi.yml, appdome-mobile-risk-api-openapi.yml",
-    "apis.yml register: written (+7 apis, 8 total)"
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "appdome-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "appdome-openapi.json: declared missing tag: API Account Maintenance",
+    "appdome-openapi.json: declared missing tag: API Team Management",
+    "appdome-openapi.json: declared missing tag: API User Management",
+    "appdome-openapi.json: declared missing tag: App Validation",
+    "appdome-openapi.json: declared missing tag: Secure Certificate",
+    "appdome-openapi.json: declared missing tag: Tasks",
+    "tag 'Tasks' spans 2 source specs (appdome-openapi.json, appdome-tasks-api-openapi.yml): per-path servers applied",
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "appdome-api-account-maintenance-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "appdome-api-team-management-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "appdome-api-user-management-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "appdome-app-validation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "appdome-secure-certificate-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
