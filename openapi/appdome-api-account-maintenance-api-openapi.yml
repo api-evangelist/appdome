@@ -591,3 +591,9 @@ components:
       type: apiKey
       in: header
       name: Authorization
+x-provenance:
+  method: harvested
+  publisher: Appdome
+  source: https://fusion.appdome.com/swagger.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
